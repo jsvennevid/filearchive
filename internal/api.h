@@ -3,6 +3,7 @@
 
 typedef struct fa_archive_t fa_archive_t;
 typedef struct fa_archive_writer_t fa_archive_writer_t;
+typedef struct fa_writer_entry_t fa_writer_entry_t;
 typedef struct fa_file_t fa_file_t;
 typedef struct fa_dir_t fa_dir_t;
 
@@ -23,6 +24,7 @@ struct fa_archive_t
 		uint32_t offset;
 		uint32_t fill;
 		uint8_t* data;
+		fa_file_t* owner;
 	} cache;
 };
 
@@ -31,6 +33,26 @@ struct fa_archive_writer_t
 	fa_archive_t archive;
 
 	uint32_t alignment;
+
+	struct
+	{
+		fa_writer_entry_t* data;
+		uint32_t count;
+		uint32_t capacity;
+	} entries;
+};
+
+struct fa_writer_entry_t
+{
+	const char* path;
+
+	fa_offset_t offset;
+
+	struct
+	{
+		uint32_t original;
+		uint32_t compressed;
+	} size;
 };
 
 struct fa_file_t
