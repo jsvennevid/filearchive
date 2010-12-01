@@ -17,6 +17,12 @@ typedef struct fa_header_t fa_header_t;
 typedef struct fa_footer_t fa_footer_t;
 typedef struct fa_hash_t fa_hash_t;
 
+typedef enum
+{
+	FA_COMPRESSION_NONE = (0),
+	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0'))
+} fa_compression_t;
+
 struct fa_container_t
 {
 	uint32_t parent;	// Offset to parent container (FileArchiveContainer)
@@ -92,9 +98,6 @@ struct fa_hash_t
 #define FA_VERSION_CURRENT (FA_VERSION_1)
 
 #define FA_MAGIC_COOKIE (('F' << 24) | ('A' << 16) | ('R' << 8) | ('C'))
-
-#define FA_COMPRESSION_NONE (0)
-#define FA_COMPRESSION_FASTLZ (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0'))
 
 #define FA_COMPRESSION_SIZE_IGNORE (0x8000)
 #define FA_COMPRESSION_SIZE_MASK (0x7fff)

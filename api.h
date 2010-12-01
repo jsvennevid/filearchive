@@ -7,11 +7,13 @@ typedef void fa_file_t;
 typedef void fa_dir_t;
 #endif
 
+#include "filearchive.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-typedef struct fa_dirinfo_t fa_dirinfo_t;
+typedef struct fa_config_t fa_config_t;
 
 typedef enum
 {
@@ -28,39 +30,153 @@ typedef enum
 
 typedef enum
 {
-	FA_COMMIT_DISCARD = 0, /*!< Discard changes done on archive */
-	FA_COMMIT_WRITE = 1 /*!< Write changes done to archive */
-} fa_commit_t;
+	FA_ENTRY_FILE = 0,
+	FA_ENTRY_DIR = 1,
+} fa_entrytype_t;
 
 struct fa_dirinfo_t
 {
 	const char* name; /*!< Current entry name, only valid as long as archive is opened */
+
+	fa_entrytype_t type;
+	fa_compression_t compression;
+
+	struct
+	{
+		uint32_t original;
+		uint32_t compressed;
+	} size;
+
+	fa_hash_t hash;
 };
 
-fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode);
+/*!
+ *
+ * Open archive for reading or writing
+ *
+ * \param filename Path to archive
+ * mode Mode to use when opening
+ * alignment Alignment for resulting archive when writing (when reading, pass 0)
+ *
+ * \note Currently opening existing archives (already containing data) for writing is not supported, all archives will be started from a clean slate
+**/
+fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t alignment);
+
+/*!
+ *
+ * Close previously opened archive and finalize changes
+ *
+ * \param archive Archive to close
+ *
+**/
 int fa_close_archive(fa_archive_t* archive);
 
 /*!
  *
- * Commit changes done on a writeable archive
+ * Open a file in an archive for reading or writing
  *
- * \param archive - Archive to commit changes on
- * \param type - Commit type
+ * \param archive Archive to access
+ * \param filename File to access
+ * \param mode Mode to use when doing access, must match the mode passed into fa_open_archive()
+ * \param compression What compression to use (when reading, pass FA_COMPRESSION_NONE)
+ *
+ * \return File ready to access, or NULL on error
+ *
+ * \note When writing, opening a file with the same name more than once will NOT replace the old one; a new instance will be created (but will be inaccessible by name)
+ * \note When opening a file for reading, passing @ followed by a 40-character hexadecimal string will allow opening a file for access through its content hash
  *
 **/
-int fa_commit_archive(fa_archive_t* archive, fa_commit_t type);
+fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_mode_t mode, fa_compression_t compression);
 
-fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_mode_t mode);
-int fa_close_file(fa_file_t* file);
-int fa_delete_file(fa_archive_t* archive, const char* filename);
+/*!
+ *
+ * Close a file and finalize changes
+ *
+ * \param file File to close
+ * \param info If specified, this instance will receive information about the file (including final compressed size and content hash)
+ *
+ * \return 0 if operation was successful, <0 otherwise
+ *
+**/
+int fa_close_file(fa_file_t* file, fa_dirinfo* info);
 
+/*!
+ *
+ * Read data from file
+ *
+ * \param file File to read data from
+ * \param buffer Buffer that receives read data
+ *
+ * \return Number of bytes read from file
+ *
+ * \note This method will transparently decompress data
+ *
+**/
 size_t fa_read(fa_file_t* file, void* buffer, size_t length);
+
+/*!
+ *
+ * Write data to file
+ *
+ * \param file File to write data into
+ * \param buffer Buffer that contains data to write
+ * \param length Number of bytes
+ *
+ * \return Number of bytes written; in case of an error this will NOT match the incoming length parameter
+ *
+**/
 size_t fa_write(fa_file_t* file, const void* buffer, size_t length);
+
+/*!
+ *
+ * Seek to a new location in file
+ *
+ * \param file File to seek in
+ * \param offset Offset to use when seeking
+ * \param whence What mode to use when seeking
+ *
+ * \return 0 if seeking was successful, <0 otherwise
+ *
+ * \note Seeking when writing is not supported
+ *
+**/
 int fa_seek(fa_file_t* file, off_t offset, fa_seek_t whence);
 
-fa_dir_t* fa_open_dir(fa_archive_t* archive, const char* dir);
-int fa_close_dir(fa_dir_t* dir);
+/*!
+ *
+ * Return current location in file
+ *
+ * \param file File to query for current file pointer
+ *
+ * \return Offset in file
+ *
+**/
+size_t fa_tell(fa_file* file);
 
+/*!
+ *
+ * Begin enumerating directory
+ *
+ * \param archive Archive to enumerate in
+ * \param dir Path to enumerate
+ *
+ * \return Handle to use when enumerating
+ *
+ * \note Enumerating when writing is not supported
+ *
+**/
+fa_dir_t* fa_open_dir(fa_archive_t* archive, const char* dir);
+
+/*!
+ *
+ * Complete enumeration of directory
+ *
+ * \param dir Directory to finish enumerating
+ *
+ * \return 0 if operation was successful, <0 otherwise
+ *
+**/
+int fa_close_dir(fa_dir_t* dir);
 
 #if defined(__cplusplus)
 }
