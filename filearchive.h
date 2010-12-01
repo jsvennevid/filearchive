@@ -17,6 +17,8 @@ typedef struct fa_header_t fa_header_t;
 typedef struct fa_footer_t fa_footer_t;
 typedef struct fa_hash_t fa_hash_t;
 
+typedef uint32_t fa_offset_t;
+
 typedef enum
 {
 	FA_COMPRESSION_NONE = (0),
@@ -25,30 +27,32 @@ typedef enum
 
 struct fa_container_t
 {
-	uint32_t parent;	// Offset to parent container (FileArchiveContainer)
-	uint32_t children;	// Offset to child containers (FileArchiveContainer)
-	uint32_t next;		// Offset to next sibling container (FileArchiveContainer)
+	fa_offset_t parent;		// Offset to parent container (Relative to start of TOC)
+	fa_offset_t children;		// Offset to child containers (Relative to start of TOC)
+	fa_offset_t next;		// Offset to next sibling container (Relative to start of TOC)
 
-	uint32_t files;		// Offset to first file in container (FileArchiveEntry)
-	uint32_t count;		// number of entries
+	fa_offset_t name;		// Offset to container name (Relative to start of TOC)
 
-	uint32_t name;		// Offset to container name
+	struct
+	{
+		fa_offset_t offset;	// Offset to first file in container (Relative to start of TOC)
+		uint32_t count;		// Number of files in container
+	} files;
 };
 
 struct fa_entry_t
 {
-	uint32_t data;			// Offset to file data
-	uint32_t name;			// Offset to name
+	fa_offset_t data;		// Offset to file data (Relative to start of data)
+	fa_offset_t name;		// Offset to name (Relative to start of TOC)
 
 	uint32_t compression;		// Compression method used in file
+	uint32_t blockSize;		// Block size required when decompressing
 
 	struct
 	{
 		uint32_t original;	// original file size when uncompressed
 		uint32_t compressed;	// compressed file size in archive
 	} size;
-
-	uint16_t blockSize;		// block size required for decompression
 };
 
 struct fa_block_t
@@ -66,27 +70,34 @@ struct fa_header_t
 
 	// Version 1
 
-	uint32_t containers;		// Offset to containers (first container == root folder)
-	uint32_t containerCount;	// Number of containers in archive
+	struct
+	{
+		fa_offset_t offset;	// Offset to containers (relative to start of TOC)
+		uint32_t count;		// Number of containers in archive
+	} containers;
 
-	uint32_t files;			// Offset to list of files
-	uint32_t fileCount;		// Number of files in archive
-	uint32_t hashes;		// Offset to file hashes
+	struct
+	{
+		fa_offset_t offset;	// Offset to file entries (relative to start of TOC)
+		uint32_t count;		// Number of files in archive
+	} files;
+
+	fa_offset_t hashes;		// Offset to file hashes
 };
 
 struct fa_footer_t
 {
 	uint32_t cookie;		// Magic cookie
-	uint32_t toc;			// Offset to TOC (relative to beginning of footer)
-	uint32_t data;			// Offset to data (relative to beginning of footer)
-
-	uint32_t compression;		// Compression used on header
+	uint32_t compression;		// TOC compression format
 
 	struct
 	{
 		uint32_t original;	// TOC size, uncompressed
 		uint32_t compressed;	// TOC size, compressed
 	} size;
+
+	fa_offset_t toc;		// Offset to TOC (Relative to start of footer)
+	fa_offset_t data;		// Offset to data (Relative to start of footer)
 };
 
 struct fa_hash_t
