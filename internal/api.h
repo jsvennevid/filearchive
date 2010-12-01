@@ -8,12 +8,15 @@ typedef struct fa_dir_t fa_dir_t;
 
 #include "../api.h"
 
+#include <stdint.h>
+
 struct fa_archive_t
 {
 	fa_header_t* toc;
 	fa_mode_t mode;
 
 	uint32_t base;
+	intptr_t fd;
 
 	struct
 	{
@@ -26,6 +29,8 @@ struct fa_archive_t
 struct fa_archive_writer_t
 {
 	fa_archive_t archive;
+
+	uint32_t alignment;
 };
 
 struct fa_file_t
