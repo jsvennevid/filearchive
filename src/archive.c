@@ -32,7 +32,14 @@ int fa_close_archive(fa_archive_t* archive)
 		return -1;
 	}
 
-	switch (
+	if (archive->mode == FA_MODE_READ)
+	{
+		fclose(archive->fd);
+		free(archive->toc);
+		free(archive);
+		return 0;
+	}
+
 	return -1;
 }
 

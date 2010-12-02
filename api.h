@@ -73,11 +73,10 @@ int fa_close_archive(fa_archive_t* archive);
 
 /*!
  *
- * Open a file in an archive for reading or writing
+ * Open a file in an archive for reading or writing (mode is implicit from how the archive was opened)
  *
  * \param archive Archive to access
  * \param filename File to access
- * \param mode Mode to use when doing access, must match the mode passed into fa_open_archive()
  * \param compression What compression to use (when reading, pass FA_COMPRESSION_NONE)
  *
  * \return File ready to access, or NULL on error
