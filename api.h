@@ -168,6 +168,18 @@ fa_dir_t* fa_open_dir(fa_archive_t* archive, const char* dir);
 
 /*!
  *
+ * Enumerate directory entry
+ *
+ * \param dir Directory currently being enumerated
+ * \param dirinfo Directory information structure that data should be stored into
+ *
+ * \return 0 if a new entry was enumerated, <0 otherwise
+ *
+**/
+int fa_read_dir(fa_dir_t* dir, fa_dirinfo_t* dirinfo);
+
+/*!
+ *
  * Complete enumeration of directory
  *
  * \param dir Directory to finish enumerating

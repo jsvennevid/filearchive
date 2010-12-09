@@ -9,7 +9,11 @@ typedef struct fa_dir_t fa_dir_t;
 
 #include "../api.h"
 
+#include <sha1/sha1.h>
+
 #include <stdint.h>
+
+#define FA_COMPRESSION_MAX_BLOCK (16384)
 
 struct fa_archive_t
 {
@@ -33,6 +37,7 @@ struct fa_archive_writer_t
 	fa_archive_t archive;
 
 	uint32_t alignment;
+	uint32_t offset;
 
 	struct
 	{
@@ -47,6 +52,7 @@ struct fa_writer_entry_t
 	const char* path;
 
 	fa_offset_t offset;
+	fa_compression_t compression;
 
 	struct
 	{
@@ -71,6 +77,14 @@ struct fa_file_t
 		uint32_t original;
 		uint32_t compressed;
 	} offset;
+
+	SHA1Context hash;
+};
+
+struct fa_file_writer_t
+{
+	fa_file_t file;
+	fa_writer_entry_t* entry;
 };
 
 struct fa_dir_t
@@ -79,6 +93,12 @@ struct fa_dir_t
 	fa_container_t* container;
 	uint32_t index;
 };
+
+typedef size_t (*fa_compress_input_callback_t)(void* buffer, size_t bufferSize, void* userData);
+typedef size_t (*fa_compress_output_callback_t)(const void* buffer, size_t bufferSize, void* userData);
+
+size_t fa_deflate_stream(fa_compression_t compression, size_t blockSize, fa_compress_output_callback_t output, fa_compress_input_callback_t input, void* userData);
+size_t fa_inflate_stream(fa_compression_t compression, size_t blockSize, fa_compress_output_callback_t output, fa_compress_input_callback_t input, void* userData);
 
 #endif
 
