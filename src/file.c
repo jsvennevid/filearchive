@@ -125,6 +125,7 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 	do
 	{
 		fa_file_writer_t* writer;
+		size_t maxWrite;
 
 		if ((file == NULL) || (file->archive.mode != FA_MODE_WRITE))
 		{
@@ -145,6 +146,40 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 			written += result;
 			break;
 		}
+
+		while (length > 0)
+		{
+			size_t bufferMax = FA_COMPRESSION_MAX_BLOCK - writer->buffer.fill;
+			size_t maxWrite = length > bufferMax ? bufferMax : length;
+
+			memcpy(writer->buffer.data + writer->buffer.fill, 
+
+			buffer = ((uint8_t*)buffer) + maxWrite;
+			writer->buffer.fill += maxWrite;
+			length -= maxWrite;
+
+			if (writer->buffer.fill == FA_COMPRESSION_MAX_BLOCK)
+			{
+				size_t compressedSize = fa_compress_block(writer->entry.compression);
+				fa_block_t block;
+				uint8_t* data;
+
+				if (compressedSize >= FA_COMPRESSION_MAX_BLOCK)
+				{
+					block.original = FA_COMPRESSION_MAX_BLOCK;
+					block.compressed = FA_COMPRESSION_SIZE_IGNORE | FA_COMPRESSION_MAX_BLOCK;
+				}
+				else
+				{
+					block.original = FA_COMPRESSION_MAX_BLOCK;
+					block.compressed = compressedSize;
+				}
+
+				fwrite(...);
+			}
+		}
+
+		
 	}
 	while (0);
 
