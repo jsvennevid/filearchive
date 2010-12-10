@@ -78,6 +78,7 @@ int fa_close_archive(fa_archive_t* archive);
  * \param archive Archive to access
  * \param filename File to access
  * \param compression What compression to use (when reading, pass FA_COMPRESSION_NONE)
+ * \param dirinfo If specified when opening for reading, this instance will receive information about the file
  *
  * \return File ready to access, or NULL on error
  *
@@ -85,7 +86,7 @@ int fa_close_archive(fa_archive_t* archive);
  * \note When opening a file for reading, passing @ followed by a 40-character hexadecimal string will allow opening a file for access through its content hash
  *
 **/
-fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_mode_t mode, fa_compression_t compression);
+fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_mode_t mode, fa_compression_t compression, fa_dirinfo_t* info);
 
 /*!
  *
@@ -97,7 +98,7 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_mode_t m
  * \return 0 if operation was successful, <0 otherwise
  *
 **/
-int fa_close_file(fa_file_t* file, fa_dirinfo* info);
+int fa_close_file(fa_file_t* file, fa_dirinfo_t* info);
 
 /*!
  *

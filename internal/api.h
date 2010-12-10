@@ -14,6 +14,7 @@ typedef struct fa_dir_t fa_dir_t;
 #include <stdint.h>
 
 #define FA_COMPRESSION_MAX_BLOCK (16384)
+#define FA_ARCHIVE_CACHE_SIZE (FA_COMPRESSION_MAX_BLOCK * 4)
 
 struct fa_archive_t
 {
@@ -94,11 +95,7 @@ struct fa_dir_t
 	uint32_t index;
 };
 
-typedef size_t (*fa_compress_input_callback_t)(void* buffer, size_t bufferSize, void* userData);
-typedef size_t (*fa_compress_output_callback_t)(const void* buffer, size_t bufferSize, void* userData);
-
-size_t fa_deflate_stream(fa_compression_t compression, size_t blockSize, fa_compress_output_callback_t output, fa_compress_input_callback_t input, void* userData);
-size_t fa_inflate_stream(fa_compression_t compression, size_t blockSize, fa_compress_output_callback_t output, fa_compress_input_callback_t input, void* userData);
+size_t fa_compress_block(fa_compression_t compression, void* out, size_t outSize, const void* in, size_t inSize);
 
 #endif
 
