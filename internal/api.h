@@ -5,6 +5,7 @@ typedef struct fa_archive_t fa_archive_t;
 typedef struct fa_archive_writer_t fa_archive_writer_t;
 typedef struct fa_writer_entry_t fa_writer_entry_t;
 typedef struct fa_file_t fa_file_t;
+typedef struct fa_file_writer_t fa_file_writer_t;
 typedef struct fa_dir_t fa_dir_t;
 
 #include "../api.h"

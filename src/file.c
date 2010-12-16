@@ -1,8 +1,12 @@
 #include "../internal/api.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 static fa_container_t* fa_find_container(const fa_archive_t* archive, const char* path);
 
-fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compression_t compression)
+fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compression_t compression, fa_dirinfo_t* dirinfo)
 {
 	if (archive == NULL)
 	{
@@ -53,7 +57,7 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 			file->file.buffer.data = malloc(FA_COMPRESSION_MAX_BLOCK);
 			file->entry = entry;
 
-			SHA1Reset(&(file->hash));
+			SHA1Reset(&(file->file.hash));
 
 			archive->cache.owner = &(file->file);
 			return &(file->file);
@@ -71,14 +75,14 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 		return -1;
 	}
 
-	if (file->archive.cache.owner == file)
+	if (file->archive->cache.owner == file)
 	{
 		file->archive->cache.offset = 0;
 		file->archive->cache.fill = 0;
 		file->archive->cache.owner = NULL;
 	}
 
-	switch (file->archive.mode)
+	switch (file->archive->mode)
 	{
 		case FA_MODE_READ:
 		{
@@ -89,13 +93,13 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 		{
 			fa_file_writer_t* writer = (fa_file_writer_t*)file;
 
-			SHA1Result(&(writer->hash));
+			SHA1Result(&(writer->file.hash));
 
 			if (dirinfo != NULL)
 			{
-				fa_entry_t* entry = writer->entry;
+				fa_writer_entry_t* entry = writer->entry;
 
-				dirinfo->name = entry->name;
+				dirinfo->name = entry->path; // TODO: use local filename instead of full path
 				dirinfo->type = FA_ENTRY_FILE;
 				dirinfo->compression = entry->compression;
 
@@ -107,7 +111,7 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 
 			// TODO: flush buffer
 
-			free(writer->file.buffer);
+			free(writer->file.buffer.data);
 			free(writer);
 
 			return 0;
@@ -139,14 +143,14 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 
 		writer = (fa_file_writer_t*)file;
 
-		SHA1Input(&(writer->hash), buffer, length);
+		SHA1Input(&(writer->file.hash), buffer, length);
 
-		if (writer->entry.compression == FA_COMPRESSION_NONE)
+		if (writer->entry->compression == FA_COMPRESSION_NONE)
 		{
-			size_t result = fwrite(buffer, 1, length, (FILE*)file->archive.fd);
+			size_t result = fwrite(buffer, 1, length, (FILE*)file->archive->fd);
 
-			writer->entry.size.original += result;
-			writer->entry.size.compressed += result;
+			writer->entry->size.original += result;
+			writer->entry->size.compressed += result;
 
 			written += result;
 			break;
@@ -154,17 +158,17 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 
 		while (length > 0)
 		{
-			size_t bufferMax = FA_COMPRESSION_MAX_BLOCK - writer->buffer.fill;
+			size_t bufferMax = FA_COMPRESSION_MAX_BLOCK - writer->file.buffer.fill;
 			size_t maxWrite = length > bufferMax ? bufferMax : length;
 
-			memcpy(writer->buffer.data + writer->buffer.fill, buffer, maxWrite);
+			memcpy(writer->file.buffer.data + writer->file.buffer.fill, buffer, maxWrite);
 
 			buffer = ((uint8_t*)buffer) + maxWrite;
-			writer->buffer.fill += maxWrite;
+			writer->file.buffer.fill += maxWrite;
 
-			if (writer->buffer.fill == FA_COMPRESSION_MAX_BLOCK)
+			if (writer->file.buffer.fill == FA_COMPRESSION_MAX_BLOCK)
 			{
-				size_t compressedSize = fa_compress_block(writer->entry.compression, file->archive->cache.data, FA_ARCHIVE_CACHE_SIZE, writer->buffer.data, FA_COMPRESSION_MAX_BLOCK);
+				size_t compressedSize = fa_compress_block(writer->entry->compression, file->archive->cache.data, FA_ARCHIVE_CACHE_SIZE, writer->file.buffer.data, FA_COMPRESSION_MAX_BLOCK);
 				fa_block_t block;
 				uint8_t* data;
 
@@ -176,20 +180,20 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 				else
 				{
 					block.original = FA_COMPRESSION_MAX_BLOCK;
-					block.compressed = compressedSize;
+					block.compressed = (uint16_t)compressedSize;
 				}
 
-				if (fwrite(&block, 1, sizeof(block), file->archive->fd) != sizeof(block))
+				if (fwrite(&block, 1, sizeof(block), (FILE*)(file->archive->fd)) != sizeof(block))
 				{
 					break;
 				}
 
-				if (fwrite((block.compressed & FA_COMPRESSION_SIZE_IGNORE) == FA_COMPRESSION_SIZE_IGNORE ? writer->buffer.data : file->archive->cache.data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, file->archive-fd) != (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE))
+				if (fwrite((block.compressed & FA_COMPRESSION_SIZE_IGNORE) == FA_COMPRESSION_SIZE_IGNORE ? writer->file.buffer.data : file->archive->cache.data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)file->archive->fd) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
 				{
 					break;
 				}
 
-				writer->buffer.fill = 0;
+				writer->file.buffer.fill = 0;
 			}
 
 			length -= maxWrite;
@@ -204,5 +208,6 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 
 static fa_container_t* fa_find_container(const fa_archive_t* archive, const char* path)
 {
+	return NULL;
 }
 

@@ -1,5 +1,9 @@
 #include "../internal/api.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 static fa_archive_t* fa_open_archive_reading(const char* filename);
 static fa_archive_t* fa_open_archive_writing(const char* filename, uint32_t alignment);
 

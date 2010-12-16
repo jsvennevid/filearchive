@@ -13,7 +13,7 @@ typedef void fa_dir_t;
 extern "C" {
 #endif
 
-typedef struct fa_config_t fa_config_t;
+typedef struct fa_dirinfo_t fa_dirinfo_t;
 
 typedef enum
 {
@@ -86,7 +86,7 @@ int fa_close_archive(fa_archive_t* archive);
  * \note When opening a file for reading, passing @ followed by a 40-character hexadecimal string will allow opening a file for access through its content hash
  *
 **/
-fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_mode_t mode, fa_compression_t compression, fa_dirinfo_t* info);
+fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compression_t compression, fa_dirinfo_t* info);
 
 /*!
  *
@@ -140,7 +140,7 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length);
  * \note Seeking when writing is not supported
  *
 **/
-int fa_seek(fa_file_t* file, off_t offset, fa_seek_t whence);
+int fa_seek(fa_file_t* file, int64_t offset, fa_seek_t whence);
 
 /*!
  *
@@ -151,7 +151,7 @@ int fa_seek(fa_file_t* file, off_t offset, fa_seek_t whence);
  * \return Offset in file
  *
 **/
-size_t fa_tell(fa_file* file);
+size_t fa_tell(fa_file_t* file);
 
 /*!
  *
