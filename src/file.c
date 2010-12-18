@@ -92,6 +92,7 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 		case FA_MODE_WRITE:
 		{
 			fa_file_writer_t* writer = (fa_file_writer_t*)file;
+			int result = 0;
 
 			SHA1Result(&(writer->file.hash));
 
@@ -109,12 +110,63 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 				// TODO: fix hash
 			}
 
+			fprintf(stderr, "closing... %u\n", __LINE__);
+
+			do
+			{
+				size_t compressedSize;
+				fa_block_t block;
+
+				if (writer->file.buffer.fill == 0)
+				{
+					break;
+				}
+
+			fprintf(stderr, "closing... %u\n", __LINE__);
+
+			fprintf(stderr, "compress: %u, %p, %u, %p, %u\n", writer->entry->compression, file->archive->cache.data, FA_ARCHIVE_CACHE_SIZE, writer->file.buffer.data, writer->file.buffer.fill);
+
+				compressedSize = fa_compress_block(writer->entry->compression, file->archive->cache.data, FA_ARCHIVE_CACHE_SIZE, writer->file.buffer.data, writer->file.buffer.fill);
+
+
+			fprintf(stderr, "closing... %u\n", __LINE__);
+
+
+				if (compressedSize >= writer->file.buffer.fill)
+				{
+					block.original = writer->file.buffer.fill;
+					block.compressed = FA_COMPRESSION_SIZE_IGNORE | writer->file.buffer.fill;
+				}
+				else
+				{
+					block.original = writer->file.buffer.fill;
+					block.compressed = compressedSize;
+				}
+
+			fprintf(stderr, "closing... %u\n", __LINE__);
+
+				if (fwrite(&block, 1, sizeof(block), (FILE*)(file->archive->fd)) != sizeof(block))
+				{
+					result = -1;
+					break;
+				}
+
+				if (fwrite((block.compressed & FA_COMPRESSION_SIZE_IGNORE) == FA_COMPRESSION_SIZE_IGNORE ? writer->file.buffer.data : file->archive->cache.data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)file->archive->fd) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
+				{
+					result = -1;
+					break;
+				}
+			}
+			while (0);
+
+			fprintf(stderr, "closing... %u\n", __LINE__);
+
 			// TODO: flush buffer
 
 			free(writer->file.buffer.data);
 			free(writer);
 
-			return 0;
+			return result;
 		}
 		break;
 	}
@@ -197,6 +249,7 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 			}
 
 			length -= maxWrite;
+			written += maxWrite;
 		}
 
 		

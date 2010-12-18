@@ -26,6 +26,8 @@ fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t ali
 		break;
 	}
 
+	archive->cache.data = malloc(FA_ARCHIVE_CACHE_SIZE);
+
 	return archive;
 }
 
@@ -35,6 +37,8 @@ int fa_close_archive(fa_archive_t* archive)
 	{
 		return -1;
 	}
+
+	free(archive->cache.data);
 
 	if (archive->mode == FA_MODE_READ)
 	{
