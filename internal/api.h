@@ -23,7 +23,7 @@ struct fa_archive_t
 	fa_mode_t mode;
 
 	uint32_t base;
-	intptr_t fd;
+	void* fd;
 
 	struct
 	{

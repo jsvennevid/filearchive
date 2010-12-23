@@ -186,7 +186,6 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 	do
 	{
 		fa_file_writer_t* writer;
-		size_t maxWrite;
 
 		if ((file == NULL) || (file->archive->mode != FA_MODE_WRITE))
 		{
@@ -228,11 +227,13 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 				{
 					block.original = FA_COMPRESSION_MAX_BLOCK;
 					block.compressed = FA_COMPRESSION_SIZE_IGNORE | FA_COMPRESSION_MAX_BLOCK;
+					data = writer->file.buffer.data;
 				}
 				else
 				{
 					block.original = FA_COMPRESSION_MAX_BLOCK;
 					block.compressed = (uint16_t)compressedSize;
+					data = file->archive->cache.data;
 				}
 
 				if (fwrite(&block, 1, sizeof(block), (FILE*)(file->archive->fd)) != sizeof(block))
@@ -240,7 +241,7 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 					break;
 				}
 
-				if (fwrite((block.compressed & FA_COMPRESSION_SIZE_IGNORE) == FA_COMPRESSION_SIZE_IGNORE ? writer->file.buffer.data : file->archive->cache.data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)file->archive->fd) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
+				if (fwrite(data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)file->archive->fd) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
 				{
 					break;
 				}
