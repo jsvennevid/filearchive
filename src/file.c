@@ -100,7 +100,7 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 			{
 				fa_writer_entry_t* entry = writer->entry;
 
-				dirinfo->name = entry->path; // TODO: use local filename instead of full path
+				dirinfo->name = strrchr(erntry->path, '/') ? strrchr(entry->path, '/') + 1 : entry->path;
 				dirinfo->type = FA_ENTRY_FILE;
 				dirinfo->compression = entry->compression;
 
@@ -110,40 +110,31 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 				// TODO: fix hash
 			}
 
-			fprintf(stderr, "closing... %u\n", __LINE__);
-
 			do
 			{
 				size_t compressedSize;
 				fa_block_t block;
+				uint8_t* data;
 
 				if (writer->file.buffer.fill == 0)
 				{
 					break;
 				}
 
-			fprintf(stderr, "closing... %u\n", __LINE__);
-
-			fprintf(stderr, "compress: %u, %p, %u, %p, %u\n", writer->entry->compression, file->archive->cache.data, FA_ARCHIVE_CACHE_SIZE, writer->file.buffer.data, writer->file.buffer.fill);
-
 				compressedSize = fa_compress_block(writer->entry->compression, file->archive->cache.data, FA_ARCHIVE_CACHE_SIZE, writer->file.buffer.data, writer->file.buffer.fill);
-
-
-			fprintf(stderr, "closing... %u\n", __LINE__);
-
 
 				if (compressedSize >= writer->file.buffer.fill)
 				{
 					block.original = writer->file.buffer.fill;
 					block.compressed = FA_COMPRESSION_SIZE_IGNORE | writer->file.buffer.fill;
+					data = writer->file.buffer.data;
 				}
 				else
 				{
 					block.original = writer->file.buffer.fill;
 					block.compressed = compressedSize;
+					data = file->archive->cache.data;
 				}
-
-			fprintf(stderr, "closing... %u\n", __LINE__);
 
 				if (fwrite(&block, 1, sizeof(block), (FILE*)(file->archive->fd)) != sizeof(block))
 				{
@@ -151,15 +142,13 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 					break;
 				}
 
-				if (fwrite((block.compressed & FA_COMPRESSION_SIZE_IGNORE) == FA_COMPRESSION_SIZE_IGNORE ? writer->file.buffer.data : file->archive->cache.data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)file->archive->fd) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
+				if (fwrite(data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)file->archive->fd) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
 				{
 					result = -1;
 					break;
 				}
 			}
 			while (0);
-
-			fprintf(stderr, "closing... %u\n", __LINE__);
 
 			// TODO: flush buffer
 
@@ -252,8 +241,6 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 			length -= maxWrite;
 			written += maxWrite;
 		}
-
-		
 	}
 	while (0);
 
