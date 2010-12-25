@@ -69,9 +69,10 @@ fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t ali
  * Close previously opened archive and finalize changes
  *
  * \param archive Archive to close
+ * \param compression Compression to use for the TOC when writing (else pass FA_COMPRESSION_NONE)
  *
 **/
-int fa_close_archive(fa_archive_t* archive);
+int fa_close_archive(fa_archive_t* archive, fa_compression_t compression);
 
 /*!
  *

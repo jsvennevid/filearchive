@@ -51,9 +51,11 @@ struct fa_archive_writer_t
 
 struct fa_writer_entry_t
 {
-	const char* path;
+	char* path;
 
+	fa_offset_t container;
 	fa_offset_t offset;
+
 	fa_compression_t compression;
 
 	struct

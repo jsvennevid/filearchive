@@ -100,7 +100,7 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 			{
 				fa_writer_entry_t* entry = writer->entry;
 
-				dirinfo->name = strrchr(erntry->path, '/') ? strrchr(entry->path, '/') + 1 : entry->path;
+				dirinfo->name = strrchr(entry->path, '/') ? strrchr(entry->path, '/') + 1 : entry->path;
 				dirinfo->type = FA_ENTRY_FILE;
 				dirinfo->compression = entry->compression;
 
@@ -147,6 +147,8 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 					result = -1;
 					break;
 				}
+
+				((fa_archive_writer_t*)file->archive)->offset += sizeof(block) + (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE);
 			}
 			while (0);
 
@@ -154,6 +156,8 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 
 			free(writer->file.buffer.data);
 			free(writer);
+
+			fprintf(stderr, "LU: %u\n", ((fa_archive_writer_t*)file->archive)->offset);
 
 			return result;
 		}
@@ -192,6 +196,7 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 			writer->entry->size.original += result;
 			writer->entry->size.compressed += result;
 
+			((fa_archive_writer_t*)file->archive)->offset += result;
 			written += result;
 			break;
 		}
@@ -235,6 +240,7 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 					break;
 				}
 
+				((fa_archive_writer_t*)file->archive)->offset += sizeof(block) + (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE);
 				writer->file.buffer.fill = 0;
 			}
 

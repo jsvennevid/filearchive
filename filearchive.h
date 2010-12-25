@@ -111,7 +111,6 @@ struct fa_hash_t
 #define FA_MAGIC_COOKIE (('F' << 24) | ('A' << 16) | ('R' << 8) | ('C'))
 
 #define FA_COMPRESSION_SIZE_IGNORE (0x8000)
-#define FA_COMPRESSION_SIZE_MASK (0x7fff)
 
 #define FA_INVALID_OFFSET (0xffffffff)
 
