@@ -35,43 +35,38 @@ fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t ali
 
 int fa_close_archive(fa_archive_t* archive, fa_compression_t compression, fa_archiveinfo_t* info)
 {
-	fa_archive_writer_t* writer;
+	int result = 0;
 
 	if (archive == NULL)
 	{
 		return -1;
 	}
 
-	if (archive->mode == FA_MODE_READ)
+	if (archive->mode == FA_MODE_WRITE)
 	{
-		fclose((FILE*)archive->fd);
-		free(archive->cache.data);
-		free(archive->toc);
-		free(archive);
-		return 0;
+		fa_archive_writer_t* writer = (fa_archive_writer_t*)archive;
+		if (writeToc(writer, compression, info))
+		{
+			result = -1;
+		}
+
+		free(writer->entries.data);
 	}
 
-	writer = (fa_archive_writer_t*)archive;
+	fclose((FILE*)archive->fd);
+	free(archive->toc);
+	free(archive);
 
-	if (writeToc(writer, compression, info))
-	{
-		return -1;
-	}
-
-	fclose((FILE*)archive->fd);	
-	free(archive->cache.data);
-	free(writer->entries.data);
-
-	return 0;
+	return result;
 }
 
 static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* info)
 {
-	fa_archive_t* archive = malloc(sizeof(fa_archive_t));
+	fa_archive_t* archive = malloc(sizeof(fa_archive_t) + FA_ARCHIVE_CACHE_SIZE);
 	memset(archive, 0, sizeof(fa_archive_t));
 
 	archive->mode = FA_MODE_READ;
-	archive->cache.data = malloc(FA_ARCHIVE_CACHE_SIZE);
+	archive->cache.data = (uint8_t*)(archive + 1);
 
 	do
 	{
@@ -237,7 +232,6 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 	}
 
 	free(archive->toc);
-	free(archive->cache.data);
 	free(archive);
 
 	return NULL;
@@ -245,11 +239,11 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 
 static fa_archive_t* openArchiveWriting(const char* filename, uint32_t alignment)
 {
-	fa_archive_writer_t* writer = malloc(sizeof(fa_archive_writer_t));
+	fa_archive_writer_t* writer = malloc(sizeof(fa_archive_writer_t) + FA_ARCHIVE_CACHE_SIZE);
 	memset(writer, 0, sizeof(fa_archive_writer_t));
 
 	writer->archive.mode = FA_MODE_WRITE;
-	writer->archive.cache.data = malloc(FA_ARCHIVE_CACHE_SIZE);
+	writer->archive.cache.data = (uint8_t*)(writer + 1);
 
 	do
 	{
@@ -265,7 +259,6 @@ static fa_archive_t* openArchiveWriting(const char* filename, uint32_t alignment
 	}
 	while (0);
 
-	free(writer->archive.cache.data);
 	free(writer);
 	return NULL;
 }
