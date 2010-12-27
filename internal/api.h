@@ -75,6 +75,7 @@ struct fa_writer_entry_t
 struct fa_file_t
 {
 	fa_archive_t* archive;
+	const fa_entry_t* entry;
 
 	struct
 	{

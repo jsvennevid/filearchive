@@ -16,10 +16,38 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 		case FA_MODE_READ:
 		{
 			const fa_container_t* container = fa_find_container(archive, NULL, filename);
+			const fa_entry_t* begin;
+			const fa_entry_t* end;
+			const char* local = strrchr(filename, '/') ? strrchr(filename, '/') + 1 : filename;
+			fa_file_t* file;
+
 			if (container == NULL)
 			{
 				return NULL;
 			}
+
+			for (begin = (fa_entry_t*)(((uint8_t*)archive->toc) + container->files.offset), end = begin + container->files.count; begin != end; ++begin)
+			{
+				const char* name = begin->name != FA_INVALID_OFFSET ? ((const char*)archive->toc) + begin->name : NULL;
+				if ((name != NULL) && !strcmp(name, local))
+				{
+					break;
+				}
+ 
+			}
+
+			if (begin == end)
+			{
+				return NULL;
+			}
+
+			file = malloc(sizeof(fa_file_t) + sizeof(FA_COMPRESSION_MAX_BLOCK));
+			memset(file, 0, sizeof(fa_file_t));
+
+			file->archive = archive;
+			file->entry = begin;
+
+			file->buffer.data = (uint8_t*)(file + 1);
 		}
 		break;
 
@@ -92,6 +120,8 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 	{
 		case FA_MODE_READ:
 		{
+			free(file);
+			return 0;
 		}
 		break;
 
