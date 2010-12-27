@@ -21,3 +21,16 @@ size_t fa_compress_block(fa_compression_t compression, void* out, size_t outSize
 	}
 }
 
+size_t fa_decompress_block(fa_compression_t compression, void* out, size_t outSize, const void* in, size_t inSize)
+{
+	switch (compression)
+	{
+		default: return 0;
+
+		case FA_COMPRESSION_FASTLZ:
+		{
+			return fastlz_decompress(in, inSize, out, outSize);
+		}
+		break;
+	}
+}

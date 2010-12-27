@@ -4,14 +4,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-static fa_archive_t* openArchiveReading(const char* filename);
+static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* info);
 static fa_archive_t* openArchiveWriting(const char* filename, uint32_t alignment);
 
-static int writeToc(fa_archive_writer_t* archive, fa_compression_t compression);
+static int writeToc(fa_archive_writer_t* archive, fa_compression_t compression, fa_archiveinfo_t* info);
 
 static fa_offset_t findContainer(const char* path, const fa_container_t* containers, const char* strings);
 
-fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t alignment)
+fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t alignment, fa_archiveinfo_t* info)
 {
 	fa_archive_t* archive = NULL;
 
@@ -19,7 +19,7 @@ fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t ali
 	{
 		case FA_MODE_READ:
 		{
-			archive = openArchiveReading(filename);
+			archive = openArchiveReading(filename, info);
 		}
 		break;
 
@@ -30,12 +30,10 @@ fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t ali
 		break;
 	}
 
-	archive->cache.data = malloc(FA_ARCHIVE_CACHE_SIZE);
-
 	return archive;
 }
 
-int fa_close_archive(fa_archive_t* archive, fa_compression_t compression)
+int fa_close_archive(fa_archive_t* archive, fa_compression_t compression, fa_archiveinfo_t* info)
 {
 	fa_archive_writer_t* writer;
 
@@ -55,7 +53,7 @@ int fa_close_archive(fa_archive_t* archive, fa_compression_t compression)
 
 	writer = (fa_archive_writer_t*)archive;
 
-	if (writeToc(writer, compression))
+	if (writeToc(writer, compression, info))
 	{
 		return -1;
 	}
@@ -67,22 +65,169 @@ int fa_close_archive(fa_archive_t* archive, fa_compression_t compression)
 	return 0;
 }
 
-static fa_archive_t* openArchiveReading(const char* filename)
+static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* info)
 {
 	fa_archive_t* archive = malloc(sizeof(fa_archive_t));
 	memset(archive, 0, sizeof(fa_archive_t));
 
 	archive->mode = FA_MODE_READ;
+	archive->cache.data = malloc(FA_ARCHIVE_CACHE_SIZE);
 
 	do
 	{
+		size_t maxRead;
+		long fileSize;
+		unsigned int i;
+		fa_footer_t footer;
+
 		archive->fd = fopen(filename, "rb");
 		if (archive->fd == NULL)
 		{
 			break;
 		}
 
-		// return archive;
+		if (fseek(archive->fd, 0, SEEK_END) < 0)
+		{
+			break;
+		}	
+
+		fileSize = ftell(archive->fd);
+		if (fileSize == -1)
+		{
+			break;
+		}
+
+		maxRead = fileSize > FA_ARCHIVE_CACHE_SIZE ? FA_ARCHIVE_CACHE_SIZE : fileSize;
+		if ((maxRead < sizeof(footer)) || (fseek(archive->fd, -maxRead, SEEK_CUR) < 0))
+		{
+			break;
+		}
+
+		if (fread(archive->cache.data, 1, maxRead, archive->fd) != maxRead)
+		{
+			break;
+		}
+
+		memset(&footer, 0, sizeof(footer));
+		for (i = maxRead - sizeof(footer); i > 0; --i)
+		{
+			uint32_t cookie;
+			memcpy(&cookie, archive->cache.data + i, sizeof(cookie));
+
+			if (cookie == FA_MAGIC_COOKIE_FOOTER)
+			{
+				memcpy(&footer, archive->cache.data + i, sizeof(footer));
+				break;
+			}
+		}
+
+		if (footer.cookie != FA_MAGIC_COOKIE_FOOTER)
+		{
+			break;
+		}
+
+		archive->base = fileSize - (maxRead - i) - (footer.toc.compressed + footer.data.compressed);
+
+		if (fseek(archive->fd, fileSize - (maxRead - i) - footer.toc.compressed, SEEK_SET) < 0)
+		{
+			break;
+		}
+
+		archive->toc = malloc(footer.toc.original);
+
+		if (footer.toc.compression == FA_COMPRESSION_NONE)
+		{
+			if (fread(archive->toc, 1, footer.toc.original, archive->fd) != footer.toc.original)
+			{
+				break;
+			}
+		}
+		else
+		{
+			uint32_t length = footer.toc.compressed;
+			uint32_t written = 0;
+			uint32_t cacheSize = 0;
+
+			while ((length > 0) && (written < footer.toc.original))
+			{
+				uint32_t maxRead = length > (FA_ARCHIVE_CACHE_SIZE - cacheSize) ? (FA_ARCHIVE_CACHE_SIZE - cacheSize) : length;
+				uint32_t cacheOffset = 0;
+
+				if (fread(archive->cache.data + cacheSize, 1, maxRead, archive->fd) != maxRead)
+				{
+					break;
+				}
+
+				cacheSize += maxRead;
+
+				while (cacheOffset < cacheSize)
+				{
+					uint32_t left = cacheSize - cacheOffset;
+					fa_block_t block;
+
+					if (left < sizeof(block))
+					{
+						break;
+					}
+
+					memcpy(&block, archive->cache.data + cacheOffset, sizeof(block));
+
+					if ((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE) + sizeof(block) > left)
+					{
+						break;
+					}
+
+					if (block.original + written > footer.toc.original)
+					{
+						length = 0;
+						break;
+					}
+
+					if (block.compressed & FA_COMPRESSION_SIZE_IGNORE)
+					{
+						memcpy(((uint8_t*)archive->toc) + written, archive->cache.data + cacheOffset + sizeof(block), block.original);
+						cacheOffset += sizeof(block) + block.original; 
+					}
+					else
+					{
+						if (fa_decompress_block(footer.toc.compression, ((uint8_t*)archive->toc) + written, block.original, archive->cache.data + cacheOffset + sizeof(block), block.compressed) != block.original)
+						{
+							length = 0;
+							break;
+						}
+					}
+
+					cacheOffset += sizeof(block) + (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE);
+					written += block.original;
+				}
+
+				if ((cacheSize - cacheOffset) > 0)
+				{
+					memcpy(archive->cache.data, archive->cache.data + cacheOffset, (cacheSize - cacheOffset));
+					cacheSize -= cacheOffset;
+				}
+
+				length -= maxRead;
+			}
+
+			if ((length != 0) || (written != footer.toc.original))
+			{
+				break;
+			} 
+		}
+
+		if (archive->toc->cookie != FA_MAGIC_COOKIE_HEADER)
+		{
+			break;
+		}
+
+		if (info)
+		{
+			info->header = *archive->toc;
+			info->footer = footer;
+		}
+
+		return archive;
 	}
 	while (0);
 
@@ -91,7 +236,10 @@ static fa_archive_t* openArchiveReading(const char* filename)
 		fclose(archive->fd);
 	}
 
+	free(archive->toc);
+	free(archive->cache.data);
 	free(archive);
+
 	return NULL;
 }
 
@@ -101,6 +249,7 @@ static fa_archive_t* openArchiveWriting(const char* filename, uint32_t alignment
 	memset(writer, 0, sizeof(fa_archive_writer_t));
 
 	writer->archive.mode = FA_MODE_WRITE;
+	writer->archive.cache.data = malloc(FA_ARCHIVE_CACHE_SIZE);
 
 	do
 	{
@@ -116,6 +265,7 @@ static fa_archive_t* openArchiveWriting(const char* filename, uint32_t alignment
 	}
 	while (0);
 
+	free(writer->archive.cache.data);
 	free(writer);
 	return NULL;
 }
@@ -125,21 +275,21 @@ static fa_offset_t relocateOffset(fa_offset_t offset, fa_offset_t delta)
 	return offset != FA_INVALID_OFFSET ? offset + delta : FA_INVALID_OFFSET;
 }
 
-static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
+static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, fa_archiveinfo_t* info)
 {
 	struct
 	{
 		size_t count;
 		size_t capacity;
 		char* data;
-	} strings = { 0, 32658, malloc(32768) };
+	} strings = { 0, 32768, malloc(32768) };
 
 	struct
 	{
 		size_t count;
 		size_t capacity;
 		fa_container_t* data;
-	} containers = { 0, 1024, malloc(1024 * sizeof(fa_container_t)) };
+	} containers = { 0, 256, malloc(256 * sizeof(fa_container_t)) };
 
 	struct
 	{
@@ -154,20 +304,15 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 	do
 	{
 		int i, count;
-		fa_header_t header;
-		fa_footer_t footer;
-
-		struct
-		{
-			size_t original;
-			size_t compressed;
-		} written = { 0, 0 };
+		fa_archiveinfo_t local;
 
 		struct
 		{
 			void* data;
 			size_t size;
 		} blocks[5]; // header, containers, files, hashes, strings
+
+		memset(&local, 0, sizeof(local));
 
 		// construct containers
 
@@ -205,8 +350,6 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 					size_t nlen = strlen(curr);
 					char term = *(offset);
 					*offset = '\0';
-
-					fprintf(stderr, "%s\n", curr);
 
 					if (containers.count == containers.capacity)
 					{
@@ -277,8 +420,9 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 			{
 				const fa_writer_entry_t* writerEntry = &(writer->entries.data[j]);
 				const char* name;
-				size_t nlen;
+				size_t nlen, k, l;
 				fa_entry_t* entry;
+				fa_hash_t* hash;
 
 				if (writerEntry->container != containerOffset)
 				{
@@ -300,7 +444,9 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 					entries.hashes = realloc(entries.hashes, entries.capacity * sizeof(fa_hash_t));
 				}
 
-				entry = &(entries.data[entries.count++]);
+				entry = &(entries.data[entries.count]);
+				hash = &(entries.hashes[entries.count]);
+				++ entries.count;
 
 				entry->data = writerEntry->offset;
 				entry->name = strings.count;
@@ -319,6 +465,15 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 
 				entry->size.original = writerEntry->size.original;
 				entry->size.compressed = writerEntry->size.compressed;
+
+				for (k = 0; k < 5; ++k)
+				{
+					for (l = 0; l < 4; ++l)
+					{
+						uint8_t v = (uint8_t)((writerEntry->hash.Message_Digest[k] >> ((3-l) * 8)) & 0xff);
+						hash->data[k * 4 + l] = v;
+					}
+				}
 
 				++ container->files.count;
 			}
@@ -347,23 +502,23 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 
 		// create header
 
-		header.cookie = FA_MAGIC_COOKIE;
-		header.version = FA_VERSION_CURRENT;
-		header.size = sizeof(fa_header_t) + containers.count + sizeof(fa_container_t) + entries.count * (sizeof(fa_entry_t) + sizeof(fa_hash_t)) + strings.count;
-		header.flags = 0;
+		local.header.cookie = FA_MAGIC_COOKIE_HEADER;
+		local.header.version = FA_VERSION_CURRENT;
+		local.header.size = sizeof(fa_header_t) + containers.count + sizeof(fa_container_t) + entries.count * (sizeof(fa_entry_t) + sizeof(fa_hash_t)) + strings.count;
+		local.header.flags = 0;
 
-		header.containers.offset = sizeof(fa_header_t);
-		header.containers.count = containers.count;
+		local.header.containers.offset = sizeof(fa_header_t);
+		local.header.containers.count = containers.count;
 
-		header.files.offset = sizeof(fa_header_t) + containers.count * sizeof(fa_container_t);
-		header.files.count = entries.count;
+		local.header.files.offset = sizeof(fa_header_t) + containers.count * sizeof(fa_container_t);
+		local.header.files.count = entries.count;
 
-		header.hashes = sizeof(fa_header_t) + containers.count * sizeof(fa_container_t) + entries.count * sizeof(fa_entry_t);
+		local.header.hashes = sizeof(fa_header_t) + containers.count * sizeof(fa_container_t) + entries.count * sizeof(fa_entry_t);
 
 		// write toc to archive
 
-		blocks[0].data = &header;
-		blocks[0].size = sizeof(header);
+		blocks[0].data = &local.header;
+		blocks[0].size = sizeof(local.header);
 
 		blocks[1].data = containers.data;
 		blocks[1].size = containers.count * sizeof(fa_container_t);
@@ -403,16 +558,14 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 
 			if (compression == FA_COMPRESSION_NONE)
 			{
-				fprintf(stderr, "toc (%lu) uncompressed\n", blockSize);
-
 				if (fwrite(blockData, 1, blockSize, (FILE*)writer->archive.fd) != blockSize)
 				{
 					result = -1;
 					break;
 				}
 
-				written.original += blockSize;
-				written.compressed += blockSize;
+				local.footer.toc.original += blockSize;
+				local.footer.toc.compressed += blockSize;
 				continue;
 			}
 
@@ -429,7 +582,11 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 				block.compressed = compressedSize;
 			}
 
-			fprintf(stderr, "toc (%lu %lu) compressed\n", blockSize, compressedSize);
+			if (fwrite(&block, 1, sizeof(block), writer->archive.fd) != sizeof(block))
+			{
+				result = -1;
+				break;
+			}
 
 			if (fwrite(compressedBlock, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)writer->archive.fd) != (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE))
 			{
@@ -437,31 +594,33 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression)
 				break;
 			}
 
-			written.original += block.original;
-			written.compressed += block.compressed & ~FA_COMPRESSION_SIZE_IGNORE;
+			local.footer.toc.original += block.original;
+			local.footer.toc.compressed += sizeof(block) + (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE);
 		}
 
-		footer.cookie = FA_MAGIC_COOKIE;
-		footer.compression = compression;	
+		if (result < 0)
+		{
+			break;
+		}
 
-		footer.size.original = written.original;
-		footer.size.compressed = written.compressed;
+		local.footer.cookie = FA_MAGIC_COOKIE_FOOTER;
+		local.footer.toc.compression = compression;	
 
-		footer.toc = written.compressed;
-		footer.data = writer->offset + written.compressed;
+		local.footer.data.original = writer->offset.original;
+		local.footer.data.compressed = writer->offset.compressed;
 
-		if (fwrite(&footer, 1, sizeof(footer), (FILE*)writer->archive.fd) != sizeof(footer))
+		if (fwrite(&local.footer, 1, sizeof(local.footer), (FILE*)writer->archive.fd) != sizeof(local.footer))
 		{
 			result = -1;
 			break;
+		}
+
+		if (info != NULL)
+		{
+			*info = local;
 		}	
 	}
 	while (0);
-
-	fprintf(stderr, "%lu string bytes\n", strings.count);
-	fprintf(stderr, "%lu containers\n", containers.count);
-	fprintf(stderr, "%lu files\n", entries.count);
-	fprintf(stderr, "result: %d\n", result);
 
 	free(strings.data);
 	free(containers.data);

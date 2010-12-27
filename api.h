@@ -16,6 +16,7 @@ extern "C" {
 #endif
 
 typedef struct fa_dirinfo_t fa_dirinfo_t;
+typedef struct fa_archiveinfo_t fa_archiveinfo_t;
 
 typedef enum
 {
@@ -52,17 +53,24 @@ struct fa_dirinfo_t
 	fa_hash_t hash;
 };
 
+struct fa_archiveinfo_t
+{
+	fa_header_t header;
+	fa_footer_t footer;
+};
+
 /*!
  *
  * Open archive for reading or writing
  *
  * \param filename Path to archive
- * mode Mode to use when opening
- * alignment Alignment for resulting archive when writing (when reading, pass 0)
+ * \param mode Mode to use when opening
+ * \param alignment Alignment for resulting archive when writing (when reading, pass 0)
+ * \param info When reading, this structure will be filled with info about the archive (can be NULL)
  *
  * \note Currently opening existing archives (already containing data) for writing is not supported, all archives will be started from a clean slate
 **/
-fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t alignment);
+fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t alignment, fa_archiveinfo_t* info);
 
 /*!
  *
@@ -70,9 +78,10 @@ fa_archive_t* fa_open_archive(const char* filename, fa_mode_t mode, uint32_t ali
  *
  * \param archive Archive to close
  * \param compression Compression to use for the TOC when writing (else pass FA_COMPRESSION_NONE)
+ * \param info When writing, this structure will be filled with info about the archive (can be NULL)
  *
 **/
-int fa_close_archive(fa_archive_t* archive, fa_compression_t compression);
+int fa_close_archive(fa_archive_t* archive, fa_compression_t compression, fa_archiveinfo_t* info);
 
 /*!
  *

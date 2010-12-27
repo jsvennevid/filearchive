@@ -88,16 +88,19 @@ struct fa_header_t
 struct fa_footer_t
 {
 	uint32_t cookie;		// Magic cookie
-	uint32_t compression;		// TOC compression format
 
 	struct
 	{
+		uint32_t compression;	// TOC compression format
 		uint32_t original;	// TOC size, uncompressed
 		uint32_t compressed;	// TOC size, compressed
-	} size;
+	} toc;
 
-	fa_offset_t toc;		// Offset to TOC (Relative to start of footer)
-	fa_offset_t data;		// Offset to data (Relative to start of footer)
+	struct
+	{
+		uint32_t original;	// Data size, uncompressed
+		uint32_t compressed;	// Data size, compressed
+	} data;
 };
 
 struct fa_hash_t
@@ -108,7 +111,8 @@ struct fa_hash_t
 #define FA_VERSION_1 (1)
 #define FA_VERSION_CURRENT (FA_VERSION_1)
 
-#define FA_MAGIC_COOKIE (('F' << 24) | ('A' << 16) | ('R' << 8) | ('C'))
+#define FA_MAGIC_COOKIE_HEADER (('F' << 24) | ('A' << 16) | ('R' << 8) | ('H'))
+#define FA_MAGIC_COOKIE_FOOTER (('F' << 24) | ('A' << 16) | ('R' << 8) | ('F'))
 
 #define FA_COMPRESSION_SIZE_IGNORE (0x8000)
 

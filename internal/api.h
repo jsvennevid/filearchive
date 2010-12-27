@@ -22,7 +22,7 @@ struct fa_archive_t
 	fa_header_t* toc;
 	fa_mode_t mode;
 
-	uint32_t base;
+	uint64_t base;
 	void* fd;
 
 	struct
@@ -39,7 +39,12 @@ struct fa_archive_writer_t
 	fa_archive_t archive;
 
 	uint32_t alignment;
-	uint32_t offset;
+
+	struct
+	{
+		uint32_t original;
+		uint32_t compressed;
+	} offset;
 
 	struct
 	{
@@ -63,6 +68,8 @@ struct fa_writer_entry_t
 		uint32_t original;
 		uint32_t compressed;
 	} size;
+
+	SHA1Context hash;
 };
 
 struct fa_file_t
@@ -81,8 +88,6 @@ struct fa_file_t
 		uint32_t original;
 		uint32_t compressed;
 	} offset;
-
-	SHA1Context hash;
 };
 
 struct fa_file_writer_t
@@ -93,12 +98,16 @@ struct fa_file_writer_t
 
 struct fa_dir_t
 {
-	fa_archive_t* archive;
-	fa_container_t* container;
+	const fa_archive_t* archive;
+	const fa_container_t* parent;
+
+	const fa_container_t* container;
 	uint32_t index;
 };
 
 size_t fa_compress_block(fa_compression_t compression, void* out, size_t outSize, const void* in, size_t inSize);
+size_t fa_decompress_block(fa_compression_t compression, void* out, size_t outSize, const void* in, size_t inSize); 
+const fa_container_t* fa_find_container(const fa_archive_t* archive, const fa_container_t* container, const char* path);
 
 #endif
 
