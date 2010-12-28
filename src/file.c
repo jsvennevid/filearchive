@@ -47,6 +47,8 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 			file->archive = archive;
 			file->entry = begin;
 
+			file->base = archive->base + begin->data;
+
 			file->buffer.data = (uint8_t*)(file + 1);
 
 			return file;
@@ -249,7 +251,7 @@ size_t fa_read_file(fa_file_t* file, void* buffer, size_t length)
 		maxRawRead = length & ~(FA_COMPRESSION_MAX_BLOCK-1);
 		maxRead = maxRawRead > maxBufferRead ? maxBufferRead : maxRawRead;
 
-		if (fseek(file->archive->fd, file->archive->base + file->offset.compressed, SEEK_SET) < 0)
+		if (fseek(file->archive->fd, file->base + file->offset.compressed, SEEK_SET) < 0)
 		{
 			break;
 		}
@@ -428,7 +430,7 @@ int fa_seek(fa_file_t* file, int64_t offset, fa_seek_t whence)
 
 		if (alignedOffset != fixedOffset)
 		{
-			if (fseek(file->archive->fd, file->archive->base + alignedOffset, SEEK_SET) < 0)
+			if (fseek(file->archive->fd, file->base + alignedOffset, SEEK_SET) < 0)
 			{
 				return -1;
 			}

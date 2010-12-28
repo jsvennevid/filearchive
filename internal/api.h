@@ -77,6 +77,8 @@ struct fa_file_t
 	fa_archive_t* archive;
 	const fa_entry_t* entry;
 
+	uint64_t base;
+
 	struct
 	{
 		uint32_t offset;
