@@ -48,6 +48,8 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 			file->entry = begin;
 
 			file->buffer.data = (uint8_t*)(file + 1);
+
+			return file;
 		}
 		break;
 
@@ -214,7 +216,85 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 
 size_t fa_read_file(fa_file_t* file, void* buffer, size_t length)
 {
-	return 0;
+	size_t totalRead = 0;
+
+	do
+	{
+		uint32_t maxPreRead, maxFileRead, maxBufferRead, maxRawRead, maxRead;
+
+		if ((file == NULL) || (file->archive->mode != FA_MODE_READ))
+		{
+			break;
+		}
+
+		maxPreRead = file->buffer.fill - file->buffer.offset;
+		if (maxPreRead > 0)
+		{
+			maxRead = length > maxPreRead ? maxPreRead : length;
+			memcpy(buffer, file->buffer.data + file->buffer.offset, maxRead);
+
+			file->buffer.offset += maxRead;
+			buffer = ((uint8_t*)buffer) + maxRead;
+			length -= maxRead;
+			totalRead += maxRead;
+		}
+
+		if (length == 0)
+		{
+			break;
+		}
+
+		maxFileRead = file->entry->size.original - file->offset.original;
+		maxBufferRead = maxFileRead & ~(FA_COMPRESSION_MAX_BLOCK-1);
+		maxRawRead = length & ~(FA_COMPRESSION_MAX_BLOCK-1);
+		maxRead = maxRawRead > maxBufferRead ? maxBufferRead : maxRawRead;
+
+		if (fseek(file->archive->fd, file->archive->base + file->offset.compressed, SEEK_SET) < 0)
+		{
+			break;
+		}
+
+		if (file->entry->compression == FA_COMPRESSION_NONE)
+		{
+			if (fread(buffer, 1, maxRead, file->archive->fd) != maxRead)
+			{
+				break;
+			}
+
+			buffer = ((uint8_t*)buffer) + maxRead;
+			length -= maxRead;
+			totalRead += maxRead;
+
+			file->offset.original += maxRead;
+			file->offset.compressed += maxRead;
+
+			maxFileRead -= maxRead;
+			maxFileRead = maxFileRead > FA_COMPRESSION_MAX_BLOCK ? FA_COMPRESSION_MAX_BLOCK : maxFileRead;
+
+			maxRead = length > maxFileRead ? maxFileRead : length;
+
+			if (fread(file->buffer.data, 1, maxFileRead, file->archive->fd) != maxFileRead)
+			{
+				break;
+			}
+
+			memcpy(buffer, file->buffer.data, maxRead);
+			totalRead += maxRead;
+
+			file->buffer.offset = maxRead;
+			file->buffer.fill = maxFileRead;
+
+			file->offset.original += maxFileRead;
+			file->offset.compressed += maxFileRead;
+		}
+		else
+		{
+			fprintf(stderr, "TODO: implement compressed reads\n");
+		}
+	}
+	while (0);
+
+	return totalRead;
 }
 
 size_t fa_write_file(fa_file_t* file, const void* buffer, size_t length)
