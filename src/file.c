@@ -386,3 +386,82 @@ size_t fa_write_file(fa_file_t* file, const void* buffer, size_t length)
 	return written;
 }
 
+int fa_seek(fa_file_t* file, int64_t offset, fa_seek_t whence)
+{
+	if ((file == NULL) || (file->archive->mode != FA_MODE_READ))
+	{
+		return -1;
+	}
+
+	uint32_t fixedOffset;
+	switch (whence)
+	{
+		case FA_SEEK_SET:
+		{
+			fixedOffset = offset;
+		}
+		break;
+
+		case FA_SEEK_CURR:
+		{
+			fixedOffset = file->offset.original + offset;
+		}
+		break;
+
+		case FA_SEEK_END:
+		{
+			fixedOffset = file->entry->size.original + offset;
+		}
+		break;
+	}
+
+	if (file->entry->size.original < fixedOffset)
+	{
+		return -1;
+	}
+
+	if (file->entry->compression == FA_COMPRESSION_NONE)
+	{
+		uint32_t alignedOffset = fixedOffset & ~(FA_COMPRESSION_MAX_BLOCK-1);
+		uint32_t maxFileRead = file->entry->size.original - alignedOffset;
+		maxFileRead = maxFileRead > FA_COMPRESSION_MAX_BLOCK ? FA_COMPRESSION_MAX_BLOCK : maxFileRead;
+
+		if (alignedOffset != fixedOffset)
+		{
+			if (fseek(file->archive->fd, file->archive->base + alignedOffset, SEEK_SET) < 0)
+			{
+				return -1;
+			}
+
+			if (fread(file->buffer.data, 1, maxFileRead, file->archive->fd) != maxFileRead)
+			{
+				return -1;
+			}
+		}
+		else
+		{
+			maxFileRead = 0;
+		}
+
+		file->buffer.offset = fixedOffset - alignedOffset;
+		file->buffer.fill = maxFileRead;
+
+		file->offset.compressed = file->offset.original = alignedOffset + maxFileRead;
+	}
+	else
+	{
+		fprintf(stderr, "Seeking inside compressed files currently unsupported\n");
+	}
+
+	return -1;
+}
+
+size_t fa_tell(fa_file_t* file)
+{
+	if ((file == NULL) || (file->archive->mode != FA_MODE_READ))
+	{
+		return 0;
+	}
+
+	return file->offset.original - file->buffer.fill + file->buffer.offset;	
+}
