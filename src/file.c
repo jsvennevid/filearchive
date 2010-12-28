@@ -212,12 +212,12 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 	return -1;
 }
 
-size_t fa_read(fa_file_t* file, void* buffer, size_t length)
+size_t fa_read_file(fa_file_t* file, void* buffer, size_t length)
 {
 	return 0;
 }
 
-size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
+size_t fa_write_file(fa_file_t* file, const void* buffer, size_t length)
 {
 	size_t written = 0;
 
