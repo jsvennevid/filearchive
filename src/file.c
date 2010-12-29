@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int fillCache(fa_file_t* file, size_t minFill);
+
 fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compression_t compression, fa_dirinfo_t* dirinfo)
 {
 	if (archive == NULL)
@@ -251,13 +253,13 @@ size_t fa_read_file(fa_file_t* file, void* buffer, size_t length)
 		maxRawRead = length & ~(FA_COMPRESSION_MAX_BLOCK-1);
 		maxRead = maxRawRead > maxBufferRead ? maxBufferRead : maxRawRead;
 
-		if (fseek(file->archive->fd, file->base + file->offset.compressed, SEEK_SET) < 0)
-		{
-			break;
-		}
-
 		if (file->entry->compression == FA_COMPRESSION_NONE)
 		{
+			if (fseek(file->archive->fd, file->base + file->offset.compressed, SEEK_SET) < 0)
+			{
+				break;
+			}
+
 			if (fread(buffer, 1, maxRead, file->archive->fd) != maxRead)
 			{
 				break;
@@ -291,12 +293,117 @@ size_t fa_read_file(fa_file_t* file, void* buffer, size_t length)
 		}
 		else
 		{
-			fprintf(stderr, "TODO: implement compressed reads\n");
+			if (file->archive->cache.owner != file)
+			{
+				file->archive->cache.offset = 0;
+				file->archive->cache.fill = 0;
+				file->archive->cache.owner = file;
+			}
+
+			length = length > maxFileRead ? maxFileRead : length;
+			while (length > 0)
+			{
+				if (file->buffer.offset == file->buffer.fill)
+				{
+					fa_block_t block;
+
+					if (fillCache(file, sizeof(block)) < 0)
+					{
+						break;
+					}
+
+					memcpy(&block, file->archive->cache.data + file->archive->cache.offset, sizeof(block)); 
+
+					if (fillCache(file, sizeof(block) + (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)) < 0)
+					{
+						break;
+					}
+
+					if (block.original > FA_COMPRESSION_MAX_BLOCK)
+					{
+						break;
+					}
+
+					if (block.compressed & FA_COMPRESSION_SIZE_IGNORE)
+					{
+						memcpy(file->buffer.data, file->archive->cache.data + file->archive->cache.offset + sizeof(block), block.original);
+					}
+					else
+					{
+						if (fa_decompress_block(file->entry->compression, file->buffer.data, block.original, file->archive->cache.data + file->archive->cache.offset + sizeof(block), block.compressed) != block.original)
+						{
+							break;
+						}
+					}
+
+					file->archive->cache.offset += sizeof(block) + (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE);
+					file->offset.compressed += sizeof(block) + (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE);
+					file->offset.original += block.original;
+
+					file->buffer.offset = 0;
+					file->buffer.fill = block.original;
+				}
+
+				maxRead = length > file->buffer.fill - file->buffer.offset ? file->buffer.fill - file->buffer.offset : length;
+				if (maxRead == 0)
+				{
+					break;
+				}
+
+				memcpy(buffer, file->buffer.data + file->buffer.offset, maxRead);
+
+				buffer = ((uint8_t*)buffer) + maxRead;
+				length -= maxRead;
+				totalRead += maxRead;
+
+				file->buffer.offset += maxRead;
+			}
 		}
 	}
 	while (0);
 
 	return totalRead;
+}
+
+static int fillCache(fa_file_t* file, size_t minFill)
+{
+	fa_archive_t* archive = file->archive;
+	size_t cacheFill = archive->cache.fill - archive->cache.offset;
+	size_t cacheMax, fileMax;
+	size_t maxRead;
+
+	if (cacheFill >= minFill)
+	{
+		return 0;
+	}
+
+	cacheMax = FA_ARCHIVE_CACHE_SIZE - cacheFill;
+	fileMax = file->entry->size.compressed - file->offset.compressed;
+	maxRead = cacheMax > fileMax ? fileMax : cacheMax;
+
+	memmove(archive->cache.data, archive->cache.data + archive->cache.offset, cacheFill);
+
+	archive->cache.offset = 0;
+	archive->cache.fill = cacheFill;
+
+	if (fseek(archive->fd, file->base + file->offset.compressed, SEEK_SET) < 0)
+	{
+		return -1;
+	}
+
+	if (fread(archive->cache.data + cacheFill, 1, maxRead, archive->fd) != maxRead)
+	{
+		return -1;
+	}
+
+	archive->cache.fill += maxRead;
+
+	if (archive->cache.fill < minFill)
+	{
+		return -1;
+	}
+
+	return 0;
 }
 
 size_t fa_write_file(fa_file_t* file, const void* buffer, size_t length)
