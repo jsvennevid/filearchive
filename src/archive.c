@@ -434,8 +434,14 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 		for (i = 0, count = writer->entries.count; i < count; ++i)
 		{
 			fa_writer_entry_t* entry = &(writer->entries.data[i]);
-			fa_offset_t offset = findContainer(entry->path, containers.data, strings.data);
+			fa_offset_t offset;
 
+			if (strlen(entry->path) == 0)
+			{
+				continue;
+			}
+
+			offset = findContainer(entry->path, containers.data, strings.data);
 			if (offset == FA_INVALID_OFFSET)
 			{
 				break;
@@ -449,10 +455,10 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 			break;
 		}
 
-		for (i = 0, count = containers.count; i < count; ++i)
+		for (i = 0, count = containers.count; i <= count; ++i)
 		{
-			fa_container_t* container = &(containers.data[i]);
-			fa_offset_t containerOffset = (container - containers.data) * sizeof(fa_container_t);
+			fa_container_t* container = i < count ? &(containers.data[i]) : NULL;
+			fa_offset_t containerOffset = i < count ? (container - containers.data) * sizeof(fa_container_t) : FA_INVALID_OFFSET;
 			size_t j;
 
 			for (j = 0; j < writer->entries.count; ++j)
@@ -471,7 +477,7 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 				name = strrchr(writerEntry->path, '/') != NULL ? strrchr(writerEntry->path, '/') + 1 : writerEntry->path;
 				nlen = strlen(name) + 1;
 
-				if (container->entries.offset == FA_INVALID_OFFSET)
+				if ((container != NULL) && (container->entries.offset == FA_INVALID_OFFSET))
 				{
 					container->entries.offset = entries.count * sizeof(fa_entry_t);
 				}
@@ -488,16 +494,23 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 				++ entries.count;
 
 				entry->data = writerEntry->offset;
-				entry->name = strings.count;
-
-				if (strings.count + nlen > strings.capacity)
+				if (strlen(writerEntry->path) > 0)
 				{
-					strings.capacity *= 2;
-					strings.data = realloc(strings.data, strings.capacity);
-				}
+					entry->name = strings.count;
 
-				memcpy(strings.data + strings.count, name, nlen);
-				strings.count += nlen;
+					if (strings.count + nlen > strings.capacity)
+					{
+						strings.capacity *= 2;
+						strings.data = realloc(strings.data, strings.capacity);
+					}
+
+					memcpy(strings.data + strings.count, name, nlen);
+					strings.count += nlen;
+				}
+				else
+				{
+					entry->name = FA_INVALID_OFFSET;
+				}
 
 				entry->compression = writerEntry->compression;
 				entry->blockSize = FA_COMPRESSION_MAX_BLOCK;
@@ -514,7 +527,10 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 					}
 				}
 
-				++ container->entries.count;
+				if (container != NULL)
+				{
+					++ container->entries.count;
+				}
 			}
 		}
 

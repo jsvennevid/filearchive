@@ -174,6 +174,7 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 
 			entry = &(writer->entries.data[writer->entries.count++]);
 			entry->path = strdup(filename);
+			entry->container = FA_INVALID_OFFSET;
 			entry->offset = writer->offset.compressed;
 			entry->compression = compression;
 
