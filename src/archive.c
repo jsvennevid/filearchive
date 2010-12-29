@@ -72,8 +72,10 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 	{
 		size_t maxRead;
 		long fileSize;
-		unsigned int i;
+		unsigned int i, j;
 		fa_footer_t footer;
+		SHA1Context state;
+		fa_hash_t hash;
 
 		archive->fd = fopen(filename, "rb");
 		if (archive->fd == NULL)
@@ -213,6 +215,25 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 
 		if (archive->toc->cookie != FA_MAGIC_COOKIE_HEADER)
 		{
+			break;
+		}
+
+		SHA1Reset(&state);
+		SHA1Input(&state, (const uint8_t*)archive->toc, footer.toc.original);
+		SHA1Result(&state);
+
+		for (i = 0; i < 5; ++i)
+		{
+			for (j = 0; j < 4; ++j)
+			{
+				uint8_t v = (uint8_t)((state.Message_Digest[i] >> ((3-j) * 8)) & 0xff);
+				hash.data[i * 4 + j] = v;
+			}
+		}	
+
+		if (memcmp(&hash, &footer.toc.hash, sizeof(fa_hash_t)))
+		{
+			fprintf(stderr, "TOC hash mismatch\n");
 			break;
 		}
 
@@ -595,6 +616,8 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 			local.footer.toc.original += block.original;
 			local.footer.toc.compressed += sizeof(block) + (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE);
 		}
+
+		SHA1Result(&state);
 
 		if (result < 0)
 		{
