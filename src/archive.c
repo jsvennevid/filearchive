@@ -1,4 +1,4 @@
-#include "../internal/api.h"
+#include <filearchive/internal/api.h>
 
 #include <stdio.h>
 #include <stdlib.h>
