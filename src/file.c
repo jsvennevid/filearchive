@@ -559,7 +559,7 @@ int fa_seek(fa_file_t* file, int64_t offset, fa_seek_t whence)
 	}
 	else
 	{
-		fprintf(stderr, "Seeking inside compressed files currently unsupported\n");
+		// TODO: implement seeking inside compressed files
 	}
 
 	return -1;
@@ -574,3 +574,4 @@ size_t fa_tell(fa_file_t* file)
 
 	return file->offset.original - file->buffer.fill + file->buffer.offset;	
 }
+
