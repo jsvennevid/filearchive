@@ -325,7 +325,7 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 		{
 			void* data;
 			size_t size;
-		} blocks[5]; // header, containers, files, hashes, strings
+		} blocks[5]; // header, containers, entries, hashes, strings
 
 		memset(&local, 0, sizeof(local));
 
@@ -336,8 +336,8 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 		containers.data->next = FA_INVALID_OFFSET;
 
 		containers.data->name = FA_INVALID_OFFSET;
-		containers.data->files.offset = FA_INVALID_OFFSET;
-		containers.data->files.count = 0;
+		containers.data->entries.offset = FA_INVALID_OFFSET;
+		containers.data->entries.count = 0;
 		++ containers.count;
 
 		for (i = 0, count = writer->entries.count; i < count; ++i)
@@ -388,8 +388,8 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 					memcpy(strings.data + strings.count, curr, nlen);
 					strings.count += nlen;
 
-					container->files.offset = FA_INVALID_OFFSET;
-					container->files.count = 0;
+					container->entries.offset = FA_INVALID_OFFSET;
+					container->entries.count = 0;
 
 					parentContainer->children = parent = (container - containers.data) * sizeof(fa_container_t);
 
@@ -447,9 +447,9 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 				name = strrchr(writerEntry->path, '/') != NULL ? strrchr(writerEntry->path, '/') + 1 : writerEntry->path;
 				nlen = strlen(name) + 1;
 
-				if (container->files.offset == FA_INVALID_OFFSET)
+				if (container->entries.offset == FA_INVALID_OFFSET)
 				{
-					container->files.offset = entries.count * sizeof(fa_entry_t);
+					container->entries.offset = entries.count * sizeof(fa_entry_t);
 				}
 
 				if (entries.count == entries.capacity)
@@ -490,7 +490,7 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 					}
 				}
 
-				++ container->files.count;
+				++ container->entries.count;
 			}
 		}
 
@@ -505,7 +505,7 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 			container->next = relocateOffset(container->next, sizeof(fa_header_t));
 
 			container->name = relocateOffset(container->name, sizeof(fa_header_t) + containers.count * sizeof(fa_container_t) + entries.count * (sizeof(fa_entry_t) + sizeof(fa_hash_t)));
-			container->files.offset = relocateOffset(container->files.offset, sizeof(fa_header_t) + containers.count * sizeof(fa_container_t));			
+			container->entries.offset = relocateOffset(container->entries.offset, sizeof(fa_header_t) + containers.count * sizeof(fa_container_t));			
 		}
 
 		for (i = 0, count = entries.count; i < count; ++i)
@@ -525,8 +525,8 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 		local.header.containers.offset = sizeof(fa_header_t);
 		local.header.containers.count = containers.count;
 
-		local.header.files.offset = sizeof(fa_header_t) + containers.count * sizeof(fa_container_t);
-		local.header.files.count = entries.count;
+		local.header.entries.offset = sizeof(fa_header_t) + containers.count * sizeof(fa_container_t);
+		local.header.entries.count = entries.count;
 
 		local.header.hashes = sizeof(fa_header_t) + containers.count * sizeof(fa_container_t) + entries.count * sizeof(fa_entry_t);
 

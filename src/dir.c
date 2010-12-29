@@ -57,12 +57,12 @@ int fa_read_dir(fa_dir_t* dir, fa_dirinfo_t* info)
 		return 0;
 	}
 
-	if (dir->index < dir->parent->files.count)
+	if (dir->index < dir->parent->entries.count)
 	{
-		const fa_entry_t* entries = (const fa_entry_t*)(((uint8_t*)(dir->archive->toc)) + dir->archive->toc->files.offset);
+		const fa_entry_t* entries = (const fa_entry_t*)(((uint8_t*)(dir->archive->toc)) + dir->archive->toc->entries.offset);
 		const fa_hash_t* hashes = (const fa_hash_t*)(((uint8_t*)(dir->archive->toc)) + dir->archive->toc->hashes);
 
-		const fa_entry_t* entry = ((const fa_entry_t*)(((uint8_t*)dir->archive->toc) + dir->parent->files.offset)) + dir->index++;
+		const fa_entry_t* entry = ((const fa_entry_t*)(((uint8_t*)dir->archive->toc) + dir->parent->entries.offset)) + dir->index++;
 		const fa_hash_t* hash = hashes + (entry - entries); 
 
 		memset(info, 0, sizeof(fa_dirinfo_t));

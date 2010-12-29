@@ -48,9 +48,9 @@ struct fa_container_t
 
 	struct
 	{
-		fa_offset_t offset;	// Offset to first file in container (Relative to start of TOC)
-		uint32_t count;		// Number of files in container
-	} files;
+		fa_offset_t offset;	// Offset to first entry in container (Relative to start of TOC)
+		uint32_t count;		// Number of entries in container
+	} entries;
 };
 
 struct fa_entry_t
@@ -96,11 +96,11 @@ struct fa_header_t
 
 	struct
 	{
-		fa_offset_t offset;	// Offset to file entries (relative to start of TOC)
-		uint32_t count;		// Number of files in archive
-	} files;
+		fa_offset_t offset;	// Offset to entries (relative to start of TOC)
+		uint32_t count;		// Number of entries in archive
+	} entries;
 
-	fa_offset_t hashes;		// Offset to file hashes
+	fa_offset_t hashes;		// Offset to content hashes
 };
 
 struct fa_footer_t

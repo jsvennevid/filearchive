@@ -17,30 +17,94 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 	{
 		case FA_MODE_READ:
 		{
-			const fa_container_t* container = fa_find_container(archive, NULL, filename);
-			const fa_entry_t* begin;
-			const fa_entry_t* end;
-			const char* local = strrchr(filename, '/') ? strrchr(filename, '/') + 1 : filename;
+			const fa_container_t* container;
+			const fa_entry_t* begin = NULL;
+			const fa_entry_t* end = NULL;
+			const char* local;
 			fa_file_t* file;
 
-			if (container == NULL)
+			if (*filename == '@')
 			{
-				return NULL;
-			}
-
-			for (begin = (fa_entry_t*)(((uint8_t*)archive->toc) + container->files.offset), end = begin + container->files.count; begin != end; ++begin)
-			{
-				const char* name = begin->name != FA_INVALID_OFFSET ? ((const char*)archive->toc) + begin->name : NULL;
-				if ((name != NULL) && !strcmp(name, local))
+				do
 				{
-					break;
+					const char* in = filename + 1;
+					const fa_hash_t* hashes;	
+					fa_hash_t hash;
+					int i, n;
+
+					if (strlen(in) != sizeof(hash) * 2)
+					{
+						fprintf(stderr, "size mismatch\n");
+						break;
+					}
+
+					memset(&hash, 0, sizeof(hash));
+					for (i = 0; i < sizeof(hash) * 2; ++i)
+					{
+						char v = *(in++);
+						uint8_t out;
+						if ((v >= '0') && (v <= '9'))
+						{
+							out = v - '0';
+						}
+						else if ((v >= 'A') && (v <= 'F'))
+						{
+							out = 10 + v - 'A';
+						}
+						else if ((v >= 'a') && (v <= 'f'))
+						{
+							out = 10 + v - 'a';
+						}
+						else
+						{
+							break;
+						}
+
+						hash.data[i >> 1] |= out << (((i & 1)^1) << 2);
+					}
+
+					if (i != sizeof(hash) * 2)
+					{
+						break;
+					}
+
+					hashes = (fa_hash_t*)(((uint8_t*)archive->toc) + archive->toc->hashes);
+					for (i = 0, n = archive->toc->entries.count; i < n; ++i)
+					{
+						if (memcmp(&hashes[i], &hash, sizeof(fa_hash_t)))
+						{
+							continue;
+						}
+
+						begin = ((fa_entry_t*)(((uint8_t*)archive->toc) + archive->toc->entries.offset)) + i;
+						break;
+					}
 				}
- 
+				while (0);
 			}
 
-			if (begin == end)
+			if (begin == NULL)
 			{
-				return NULL;
+				container = fa_find_container(archive, NULL, filename);
+				if (container == NULL)
+				{
+					return NULL;
+				}
+
+				local = strrchr(filename, '/') ? strrchr(filename, '/') + 1 : filename;
+				for (begin = (fa_entry_t*)(((uint8_t*)archive->toc) + container->entries.offset), end = begin + container->entries.count; begin != end; ++begin)
+				{
+					const char* name = begin->name != FA_INVALID_OFFSET ? ((const char*)archive->toc) + begin->name : NULL;
+					if ((name != NULL) && !strcmp(name, local))
+					{
+						break;
+					}
+				}
+
+				if (begin == end)
+				{
+					return NULL;
+				}
 			}
 
 			file = malloc(sizeof(fa_file_t) + sizeof(FA_COMPRESSION_MAX_BLOCK));
