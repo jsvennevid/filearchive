@@ -151,7 +151,9 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 			fa_writer_entry_t* entry;
 			fa_file_writer_t* file;
 			char* begin;
+			char* out;
 			char* end;
+			int last;
 
 			if (archive->cache.owner != NULL)
 			{
@@ -175,11 +177,23 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 			entry->offset = writer->offset.compressed;
 			entry->compression = compression;
 
-			for (begin = entry->path, end = begin + strlen(begin); begin != end; ++begin)
+			for (begin = entry->path, out = begin, last = '\0', end = begin + strlen(begin); begin != end; ++begin)
 			{
-				if (*begin == '\\')
-					*begin = '/';
+				int c = *begin;
+
+				if (c == '\\')
+				{
+					c = '/';
+				}
+
+				if ((c == '/') && ((last == '/') || (last == '\0')))
+				{
+					continue;
+				}
+
+				*out++ = last = c;
 			}
+			*out = '\0';
 
 			file->file.archive = archive;
 			file->file.buffer.data = malloc(FA_COMPRESSION_MAX_BLOCK);
