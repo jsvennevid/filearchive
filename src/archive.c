@@ -296,8 +296,9 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 
 	do
 	{
-		int i, count;
+		int i, j, count;
 		fa_archiveinfo_t local;
+		SHA1Context state;
 
 		struct
 		{
@@ -525,6 +526,8 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 		blocks[4].data = strings.data;
 		blocks[4].size = strings.count;
 
+		SHA1Reset(&state);
+
 		result = 0;
 		for (;;)
 		{
@@ -548,6 +551,8 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 			{
 				break;
 			}
+
+			SHA1Input(&state, blockData, blockSize);
 
 			if (compression == FA_COMPRESSION_NONE)
 			{
@@ -598,6 +603,15 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 
 		local.footer.cookie = FA_MAGIC_COOKIE_FOOTER;
 		local.footer.toc.compression = compression;	
+
+		for (i = 0; i < 5; ++i)
+		{
+			for (j = 0; j < 4; ++j)
+			{
+				uint8_t v = (uint8_t)((state.Message_Digest[i] >> ((3-j) * 8)) & 0xff);
+				local.footer.toc.hash.data[i * 4 + j] = v;
+			}
+		}
 
 		local.footer.data.original = writer->offset.original;
 		local.footer.data.compressed = writer->offset.compressed;

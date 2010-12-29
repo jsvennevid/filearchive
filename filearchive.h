@@ -25,6 +25,19 @@ typedef enum
 	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0'))
 } fa_compression_t;
 
+typedef enum
+{
+	FA_VERSION_1 = 1,
+
+	FA_VERSION_CURRENT = FA_VERSION_1
+} fa_version_t;
+
+typedef enum
+{
+	FA_MAGIC_COOKIE_HEADER = (('F' << 24)|('A' << 16)|('R' << 8)|('H')),
+	FA_MAGIC_COOKIE_FOOTER = (('F' << 24)|('A' << 16)|('R' << 8)|('F'))
+} fa_magic_cookie_t;
+
 struct fa_container_t
 {
 	fa_offset_t parent;		// Offset to parent container (Relative to start of TOC)
@@ -58,7 +71,12 @@ struct fa_entry_t
 struct fa_block_t
 {
 	uint16_t original;
-	uint16_t compressed; 		// FILEARCHIVE_COMPRESSION_SIZE_IGNORE == block uncompressed
+	uint16_t compressed; 		// If the highest bit (FILEARCHIVE_COMPRESSION_SIZE_IGNORE) is set, the block is uncompressed
+};
+
+struct fa_hash_t
+{
+	uint8_t data[20];
 };
 
 struct fa_header_t
@@ -94,6 +112,7 @@ struct fa_footer_t
 		uint32_t compression;	// TOC compression format
 		uint32_t original;	// TOC size, uncompressed
 		uint32_t compressed;	// TOC size, compressed
+		fa_hash_t hash;		// TOC hash
 	} toc;
 
 	struct
@@ -102,17 +121,6 @@ struct fa_footer_t
 		uint32_t compressed;	// Data size, compressed
 	} data;
 };
-
-struct fa_hash_t
-{
-	uint8_t data[20];
-};
-
-#define FA_VERSION_1 (1)
-#define FA_VERSION_CURRENT (FA_VERSION_1)
-
-#define FA_MAGIC_COOKIE_HEADER (('F' << 24) | ('A' << 16) | ('R' << 8) | ('H'))
-#define FA_MAGIC_COOKIE_FOOTER (('F' << 24) | ('A' << 16) | ('R' << 8) | ('F'))
 
 #define FA_COMPRESSION_SIZE_IGNORE (0x8000)
 
