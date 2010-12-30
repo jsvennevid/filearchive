@@ -332,7 +332,7 @@ int commandCreate(int argc, char* argv[])
 
 			fprintf(stderr, "create: Archive constructed successfully\n");
 			fprintf(stderr, "Data: %u bytes (%u bytes compressed, ratio %.2f%%)\n", info.footer.data.original, info.footer.data.compressed, info.footer.data.original > 0 ? (info.footer.data.compressed * 100.0f) / info.footer.data.original : 0.0f);
-			fprintf(stderr, "TOC: %u bytes (%u bytes compressed, ratio %.2f%%), hash: %s\n", info.footer.toc.original, info.footer.toc.compressed, info.footer.toc.original > 0 ? (info.footer.toc.compressed * 100.0f) / info.footer.toc.original : 0.0f, hash); 
+			fprintf(stderr, "TOC: %u bytes (%u bytes compressed, ratio %.2f%%; %u containers, %u entries), hash: %s\n", info.footer.toc.original, info.footer.toc.compressed, info.footer.toc.original > 0 ? (info.footer.toc.compressed * 100.0f) / info.footer.toc.original : 0.0f, info.header.containers.count, info.header.entries.count, hash); 
 		}
 	}
 
