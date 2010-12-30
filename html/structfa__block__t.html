@@ -12,6 +12,7 @@
   <div class="tabs">
     <ul class="tablist">
       <li><a href="main.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -32,14 +33,49 @@
 <h1>fa_block_t Struct Reference</h1>  </div>
 </div>
 <div class="contents">
-<!-- doxytag: class="fa_block_t" --><table class="memberdecls">
+<!-- doxytag: class="fa_block_t" -->
+<p>Compression block header.  
+<a href="#_details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="filearchive_8h_source.html">filearchive.h</a>&gt;</code></p>
+<table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3859c455077eba1eb186ee4cb2133712"></a><!-- doxytag: member="fa_block_t::original" ref="a3859c455077eba1eb186ee4cb2133712" args="" -->
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>original</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8f43fceb9bcc7c20eaf442f0b832fe86"></a><!-- doxytag: member="fa_block_t::compressed" ref="a8f43fceb9bcc7c20eaf442f0b832fe86" args="" -->
-uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>compressed</b></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__block__t.html#a3859c455077eba1eb186ee4cb2133712">original</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__block__t.html#a8f43fceb9bcc7c20eaf442f0b832fe86">compressed</a></td></tr>
 </table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Compression block header. </p>
+<p>This header is present before each and every block in a compressed stream (compression != FA_COMPRESSION_NONE) </p>
+<hr/><h2>Field Documentation</h2>
+<a class="anchor" id="a8f43fceb9bcc7c20eaf442f0b832fe86"></a><!-- doxytag: member="fa_block_t::compressed" ref="a8f43fceb9bcc7c20eaf442f0b832fe86" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t <a class="el" href="structfa__block__t.html#a8f43fceb9bcc7c20eaf442f0b832fe86">fa_block_t::compressed</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Size of the compressed block in the stream; if the highest bit is set (FILEARCHIVE_COMPRESSION_SIZE_IGNORE), the block is not compressed </p>
+
+</div>
+</div>
+<a class="anchor" id="a3859c455077eba1eb186ee4cb2133712"></a><!-- doxytag: member="fa_block_t::original" ref="a3859c455077eba1eb186ee4cb2133712" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t <a class="el" href="structfa__block__t.html#a3859c455077eba1eb186ee4cb2133712">fa_block_t::original</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Size of the original block when decompressed </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="filearchive_8h_source.html">filearchive.h</a></li>
 </ul>

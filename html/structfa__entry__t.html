@@ -12,6 +12,7 @@
   <div class="tabs">
     <ul class="tablist">
       <li><a href="main.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -32,23 +33,121 @@
 <h1>fa_entry_t Struct Reference</h1>  </div>
 </div>
 <div class="contents">
-<!-- doxytag: class="fa_entry_t" --><table class="memberdecls">
+<!-- doxytag: class="fa_entry_t" -->
+<p><code>#include &lt;<a class="el" href="filearchive_8h_source.html">filearchive.h</a>&gt;</code></p>
+<table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3c337a58b2c703fd32c830eb55bf95d3"></a><!-- doxytag: member="fa_entry_t::data" ref="a3c337a58b2c703fd32c830eb55bf95d3" args="" -->
-fa_offset_t&#160;</td><td class="memItemRight" valign="bottom"><b>data</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a622e030cc2d15e30feeaf90fec7519c7"></a><!-- doxytag: member="fa_entry_t::name" ref="a622e030cc2d15e30feeaf90fec7519c7" args="" -->
-fa_offset_t&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa063efcac899f409d77d292440d9b95e"></a><!-- doxytag: member="fa_entry_t::compression" ref="aa063efcac899f409d77d292440d9b95e" args="" -->
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>compression</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a66cf322aa5f964b65bf6eae3a8be1513"></a><!-- doxytag: member="fa_entry_t::blockSize" ref="a66cf322aa5f964b65bf6eae3a8be1513" args="" -->
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>blockSize</b></td></tr>
-<tr><td class="memItemLeft" ><a class="anchor" id="a0ef4039e0efe62bf360e5f8880d94b10"></a><!-- doxytag: member="fa_entry_t::size" ref="a0ef4039e0efe62bf360e5f8880d94b10" args="" -->
-struct {</td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<b>original</b></td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<b>compressed</b></td></tr>
-<tr><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">fa_offset_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__entry__t.html#a3c337a58b2c703fd32c830eb55bf95d3">data</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">fa_offset_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__entry__t.html#a622e030cc2d15e30feeaf90fec7519c7">name</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__entry__t.html#aa063efcac899f409d77d292440d9b95e">compression</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__entry__t.html#a66cf322aa5f964b65bf6eae3a8be1513">blockSize</a></td></tr>
+<tr><td class="memItemLeft" >struct {</td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<a class="el" href="structfa__entry__t.html#abd8ad1fed54a571720548cbc677ce0d4">original</a></td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<a class="el" href="structfa__entry__t.html#adce3d931ceef32321f77ab414e6e9ee8">compressed</a></td></tr>
+<tr><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__entry__t.html#a0ef4039e0efe62bf360e5f8880d94b10">size</a></td></tr>
 </table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Data block entry descriptor </p>
+<hr/><h2>Field Documentation</h2>
+<a class="anchor" id="a66cf322aa5f964b65bf6eae3a8be1513"></a><!-- doxytag: member="fa_entry_t::blockSize" ref="a66cf322aa5f964b65bf6eae3a8be1513" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__entry__t.html#a66cf322aa5f964b65bf6eae3a8be1513">fa_entry_t::blockSize</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Block size required when decompressing </p>
+
+</div>
+</div>
+<a class="anchor" id="adce3d931ceef32321f77ab414e6e9ee8"></a><!-- doxytag: member="fa_entry_t::compressed" ref="adce3d931ceef32321f77ab414e6e9ee8" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__entry__t.html#adce3d931ceef32321f77ab414e6e9ee8">fa_entry_t::compressed</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Compressed size </p>
+
+</div>
+</div>
+<a class="anchor" id="aa063efcac899f409d77d292440d9b95e"></a><!-- doxytag: member="fa_entry_t::compression" ref="aa063efcac899f409d77d292440d9b95e" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__entry__t.html#aa063efcac899f409d77d292440d9b95e">fa_entry_t::compression</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Compression method used in file </p>
+
+</div>
+</div>
+<a class="anchor" id="a3c337a58b2c703fd32c830eb55bf95d3"></a><!-- doxytag: member="fa_entry_t::data" ref="a3c337a58b2c703fd32c830eb55bf95d3" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">fa_offset_t <a class="el" href="structfa__entry__t.html#a3c337a58b2c703fd32c830eb55bf95d3">fa_entry_t::data</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Offset to file data (Relative to start of data stream) </p>
+
+</div>
+</div>
+<a class="anchor" id="a622e030cc2d15e30feeaf90fec7519c7"></a><!-- doxytag: member="fa_entry_t::name" ref="a622e030cc2d15e30feeaf90fec7519c7" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">fa_offset_t <a class="el" href="structfa__entry__t.html#a622e030cc2d15e30feeaf90fec7519c7">fa_entry_t::name</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Offset to name (Relative to start of TOC) </p>
+
+</div>
+</div>
+<a class="anchor" id="abd8ad1fed54a571720548cbc677ce0d4"></a><!-- doxytag: member="fa_entry_t::original" ref="abd8ad1fed54a571720548cbc677ce0d4" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__entry__t.html#abd8ad1fed54a571720548cbc677ce0d4">fa_entry_t::original</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Uncompressed size </p>
+
+</div>
+</div>
+<a class="anchor" id="a0ef4039e0efe62bf360e5f8880d94b10"></a><!-- doxytag: member="fa_entry_t::size" ref="a0ef4039e0efe62bf360e5f8880d94b10" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct { ... }   <a class="el" href="structfa__entry__t.html#a0ef4039e0efe62bf360e5f8880d94b10">fa_entry_t::size</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Entry size </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="filearchive_8h_source.html">filearchive.h</a></li>
 </ul>

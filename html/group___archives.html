@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>Filearchive: Archive</title>
+<title>Filearchive: Archives</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -12,6 +12,7 @@
   <div class="tabs">
     <ul class="tablist">
       <li><a href="main.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -22,17 +23,25 @@
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<h1>Archive</h1>  </div>
+<h1>Archives<br/>
+<small>
+[<a class="el" href="group__libfilearchive.html">Libfilearchive</a>]</small>
+</h1>  </div>
 </div>
 <div class="contents">
+
+<p>Functions for creating and reading archives.  
+<a href="#_details">More...</a></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___archive.html#ga0b07d5245bf8f58356ce4a1b9de70fbe">fa_open_archive</a> (const char *filename, <a class="el" href="api_8h.html#a431ef0274fe0fdd279ca0e9486ba15ee">fa_mode_t</a> mode, uint32_t alignment, <a class="el" href="structfa__archiveinfo__t.html">fa_archiveinfo_t</a> *info)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___archives.html#ga0b07d5245bf8f58356ce4a1b9de70fbe">fa_open_archive</a> (const char *filename, <a class="el" href="api_8h.html#a431ef0274fe0fdd279ca0e9486ba15ee">fa_mode_t</a> mode, uint32_t alignment, <a class="el" href="structfa__archiveinfo__t.html">fa_archiveinfo_t</a> *info)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Open archive for reading or writing.  <a href="#ga0b07d5245bf8f58356ce4a1b9de70fbe"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___archive.html#ga86441ddf858ce3ca24c40563df3f3096">fa_close_archive</a> (<a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *archive, <a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1">fa_compression_t</a> compression, <a class="el" href="structfa__archiveinfo__t.html">fa_archiveinfo_t</a> *info)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___archives.html#ga86441ddf858ce3ca24c40563df3f3096">fa_close_archive</a> (<a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *archive, <a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1">fa_compression_t</a> compression, <a class="el" href="structfa__archiveinfo__t.html">fa_archiveinfo_t</a> *info)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Close previously opened archive and finalize changes.  <a href="#ga86441ddf858ce3ca24c40563df3f3096"></a><br/></td></tr>
 </table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Functions for creating and reading archives. </p>
 <hr/><h2>Function Documentation</h2>
 <a class="anchor" id="ga86441ddf858ce3ca24c40563df3f3096"></a><!-- doxytag: member="api.h::fa_close_archive" ref="ga86441ddf858ce3ca24c40563df3f3096" args="(fa_archive_t *archive, fa_compression_t compression, fa_archiveinfo_t *info)" -->
 <div class="memitem">

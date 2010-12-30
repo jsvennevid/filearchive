@@ -12,6 +12,7 @@
   <div class="tabs">
     <ul class="tablist">
       <li><a href="main.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -38,15 +39,27 @@ Data Fields</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__dirinfo__t.html#a6a3f40b86aea8685cd6c8a27fbdda3f4">name</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_8h.html#ace85fad3398ac8cc3b26a6215c4807fa">fa_entrytype_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__dirinfo__t.html#ada44a6fad2c42f26f02ecfea28464ff7">type</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1">fa_compression_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__dirinfo__t.html#a839af72fb0dbaf65348e191e179d98ba">compression</a></td></tr>
-<tr><td class="memItemLeft" ><a class="anchor" id="a4d6c1413d3aec0d4361a97ad03ffe723"></a><!-- doxytag: member="fa_dirinfo_t::size" ref="a4d6c1413d3aec0d4361a97ad03ffe723" args="" -->
-struct {</td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<b>original</b></td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<b>compressed</b></td></tr>
-<tr><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae06c81c4bb584084f5421895c285afd4"></a><!-- doxytag: member="fa_dirinfo_t::hash" ref="ae06c81c4bb584084f5421895c285afd4" args="" -->
-<a class="el" href="structfa__hash__t.html">fa_hash_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>hash</b></td></tr>
+<tr><td class="memItemLeft" >struct {</td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<a class="el" href="structfa__dirinfo__t.html#afcbc3f26248ed245f015e54eea1c09d4">original</a></td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<a class="el" href="structfa__dirinfo__t.html#a4e007c6f6d22da6e277e38cc11bba8e8">compressed</a></td></tr>
+<tr><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__dirinfo__t.html#a4d6c1413d3aec0d4361a97ad03ffe723">size</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfa__hash__t.html">fa_hash_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__dirinfo__t.html#ae06c81c4bb584084f5421895c285afd4">hash</a></td></tr>
 </table>
 <hr/><h2>Field Documentation</h2>
+<a class="anchor" id="a4e007c6f6d22da6e277e38cc11bba8e8"></a><!-- doxytag: member="fa_dirinfo_t::compressed" ref="a4e007c6f6d22da6e277e38cc11bba8e8" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__dirinfo__t.html#a4e007c6f6d22da6e277e38cc11bba8e8">fa_dirinfo_t::compressed</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Compressed size </p>
+
+</div>
+</div>
 <a class="anchor" id="a839af72fb0dbaf65348e191e179d98ba"></a><!-- doxytag: member="fa_dirinfo_t::compression" ref="a839af72fb0dbaf65348e191e179d98ba" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -61,6 +74,20 @@ struct {</td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ae06c81c4bb584084f5421895c285afd4"></a><!-- doxytag: member="fa_dirinfo_t::hash" ref="ae06c81c4bb584084f5421895c285afd4" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structfa__hash__t.html">fa_hash_t</a> <a class="el" href="structfa__dirinfo__t.html#ae06c81c4bb584084f5421895c285afd4">fa_dirinfo_t::hash</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Content hash for entry </p>
+
+</div>
+</div>
 <a class="anchor" id="a6a3f40b86aea8685cd6c8a27fbdda3f4"></a><!-- doxytag: member="fa_dirinfo_t::name" ref="a6a3f40b86aea8685cd6c8a27fbdda3f4" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -72,6 +99,34 @@ struct {</td></tr>
 </div>
 <div class="memdoc">
 <p>Current entry name, only valid as long as archive is opened </p>
+
+</div>
+</div>
+<a class="anchor" id="afcbc3f26248ed245f015e54eea1c09d4"></a><!-- doxytag: member="fa_dirinfo_t::original" ref="afcbc3f26248ed245f015e54eea1c09d4" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__dirinfo__t.html#afcbc3f26248ed245f015e54eea1c09d4">fa_dirinfo_t::original</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Uncompressed size </p>
+
+</div>
+</div>
+<a class="anchor" id="a4d6c1413d3aec0d4361a97ad03ffe723"></a><!-- doxytag: member="fa_dirinfo_t::size" ref="a4d6c1413d3aec0d4361a97ad03ffe723" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct { ... }   <a class="el" href="structfa__dirinfo__t.html#a4d6c1413d3aec0d4361a97ad03ffe723">fa_dirinfo_t::size</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Size of entry </p>
 
 </div>
 </div>

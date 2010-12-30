@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>Filearchive: File</title>
+<title>Filearchive: Files</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="doxygen.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -12,6 +12,7 @@
   <div class="tabs">
     <ul class="tablist">
       <li><a href="main.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -22,34 +23,42 @@
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<h1>File</h1>  </div>
+<h1>Files<br/>
+<small>
+[<a class="el" href="group__libfilearchive.html">Libfilearchive</a>]</small>
+</h1>  </div>
 </div>
 <div class="contents">
+
+<p>Functions for reading and writing archive entries.  
+<a href="#_details">More...</a></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___file.html#ga97774affda61f2cc7a63ba34b241c84d">fa_open_file</a> (<a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *archive, const char *filename, <a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1">fa_compression_t</a> compression, <a class="el" href="structfa__dirinfo__t.html">fa_dirinfo_t</a> *info)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Open a file in an archive for reading or writing.  <a href="#ga97774affda61f2cc7a63ba34b241c84d"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___file.html#ga041c1f22b55b21a8b78c0afc204cc473">fa_open_hash</a> (<a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *archive, const <a class="el" href="structfa__hash__t.html">fa_hash_t</a> *hash)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___files.html#ga62c6237bd4e54231ed422b379ef4e0dc">fa_open</a> (<a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *archive, const char *filename, <a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1">fa_compression_t</a> compression, <a class="el" href="structfa__dirinfo__t.html">fa_dirinfo_t</a> *info)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Open a file in an archive for reading or writing.  <a href="#ga62c6237bd4e54231ed422b379ef4e0dc"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___files.html#ga041c1f22b55b21a8b78c0afc204cc473">fa_open_hash</a> (<a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *archive, const <a class="el" href="structfa__hash__t.html">fa_hash_t</a> *hash)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Open an entry in the archive based on its content hash.  <a href="#ga041c1f22b55b21a8b78c0afc204cc473"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___file.html#gac0825f4151b21b904bc0a92d645b1666">fa_close_file</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file, <a class="el" href="structfa__dirinfo__t.html">fa_dirinfo_t</a> *info)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Close a file and finalize changes.  <a href="#gac0825f4151b21b904bc0a92d645b1666"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___file.html#ga5f0f847ad195a86332869380e89b7fe5">fa_read_file</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file, void *buffer, size_t length)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Read data from file.  <a href="#ga5f0f847ad195a86332869380e89b7fe5"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___file.html#gadf6baf207e14046a03b3518ae67891da">fa_write_file</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file, const void *buffer, size_t length)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Write data to file.  <a href="#gadf6baf207e14046a03b3518ae67891da"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___file.html#ga2f4a9b3da3bbec03feff355b53b46d20">fa_seek</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file, int64_t offset, <a class="el" href="api_8h.html#a6cc422a9f7c4e0bc9ee2cafc46280795">fa_seek_t</a> whence)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Seek to a new location in file.  <a href="#ga2f4a9b3da3bbec03feff355b53b46d20"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___file.html#gadc071f250d4a137619dfafb22316b175">fa_tell</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___files.html#ga6352c81322a68bd649aa7c1941df8b32">fa_close</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file, <a class="el" href="structfa__dirinfo__t.html">fa_dirinfo_t</a> *info)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Close a file and finalize changes.  <a href="#ga6352c81322a68bd649aa7c1941df8b32"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___files.html#gaa0897c3aa290fa0e7c168dccfcb5e1d8">fa_read</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file, void *buffer, size_t length)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Read data from file.  <a href="#gaa0897c3aa290fa0e7c168dccfcb5e1d8"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___files.html#gacb0ca92f1a4051dba9d74d4bc76fec2c">fa_write</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file, const void *buffer, size_t length)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Write data to file.  <a href="#gacb0ca92f1a4051dba9d74d4bc76fec2c"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___files.html#ga448392be6674c9a031c37deaca19af29">fa_lseek</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file, int64_t offset, <a class="el" href="api_8h.html#a6cc422a9f7c4e0bc9ee2cafc46280795">fa_seek_t</a> whence)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Seek to a new location in file.  <a href="#ga448392be6674c9a031c37deaca19af29"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___files.html#gadc071f250d4a137619dfafb22316b175">fa_tell</a> (<a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *file)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return current location in file.  <a href="#gadc071f250d4a137619dfafb22316b175"></a><br/></td></tr>
 </table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Functions for reading and writing archive entries. </p>
 <hr/><h2>Function Documentation</h2>
-<a class="anchor" id="gac0825f4151b21b904bc0a92d645b1666"></a><!-- doxytag: member="api.h::fa_close_file" ref="gac0825f4151b21b904bc0a92d645b1666" args="(fa_file_t *file, fa_dirinfo_t *info)" -->
+<a class="anchor" id="ga6352c81322a68bd649aa7c1941df8b32"></a><!-- doxytag: member="api.h::fa_close" ref="ga6352c81322a68bd649aa7c1941df8b32" args="(fa_file_t *file, fa_dirinfo_t *info)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int fa_close_file </td>
+          <td class="memname">int fa_close </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td>
           <td class="paramname"> <em>file</em>, </td>
@@ -81,12 +90,57 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga97774affda61f2cc7a63ba34b241c84d"></a><!-- doxytag: member="api.h::fa_open_file" ref="ga97774affda61f2cc7a63ba34b241c84d" args="(fa_archive_t *archive, const char *filename, fa_compression_t compression, fa_dirinfo_t *info)" -->
+<a class="anchor" id="ga448392be6674c9a031c37deaca19af29"></a><!-- doxytag: member="api.h::fa_lseek" ref="ga448392be6674c9a031c37deaca19af29" args="(fa_file_t *file, int64_t offset, fa_seek_t whence)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a>* fa_open_file </td>
+          <td class="memname">int fa_lseek </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td>
+          <td class="paramname"> <em>file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int64_t&#160;</td>
+          <td class="paramname"> <em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="api_8h.html#a6cc422a9f7c4e0bc9ee2cafc46280795">fa_seek_t</a>&#160;</td>
+          <td class="paramname"> <em>whence</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Seek to a new location in file. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>File to seek in </td></tr>
+    <tr><td class="paramname">offset</td><td>Offset to use when seeking </td></tr>
+    <tr><td class="paramname">whence</td><td>What mode to use when seeking</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>0 if seeking was successful, &lt;0 otherwise</dd></dl>
+<dl class="note"><dt><b>Note:</b></dt><dd>Seeking when writing is not supported </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga62c6237bd4e54231ed422b379ef4e0dc"></a><!-- doxytag: member="api.h::fa_open" ref="ga62c6237bd4e54231ed422b379ef4e0dc" args="(fa_archive_t *archive, const char *filename, fa_compression_t compression, fa_dirinfo_t *info)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a>* fa_open </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="api_8h.html#a8e477467c2aa09201bff890e9dd18f79">fa_archive_t</a> *&#160;</td>
           <td class="paramname"> <em>archive</em>, </td>
@@ -125,7 +179,7 @@ Functions</h2></td></tr>
     <tr><td class="paramname">archive</td><td>Archive to access </td></tr>
     <tr><td class="paramname">filename</td><td>File to access </td></tr>
     <tr><td class="paramname">compression</td><td>What compression to use (when reading, pass FA_COMPRESSION_NONE) </td></tr>
-    <tr><td class="paramname">dirinfo</td><td>If specified when opening for reading, this instance will receive information about the file</td></tr>
+    <tr><td class="paramname">info</td><td>If specified when opening for reading, this instance will receive information about the file</td></tr>
   </table>
   </dd>
 </dl>
@@ -175,12 +229,12 @@ When opening a file for reading, passing @ followed by a 40-character hexadecima
 
 </div>
 </div>
-<a class="anchor" id="ga5f0f847ad195a86332869380e89b7fe5"></a><!-- doxytag: member="api.h::fa_read_file" ref="ga5f0f847ad195a86332869380e89b7fe5" args="(fa_file_t *file, void *buffer, size_t length)" -->
+<a class="anchor" id="gaa0897c3aa290fa0e7c168dccfcb5e1d8"></a><!-- doxytag: member="api.h::fa_read" ref="gaa0897c3aa290fa0e7c168dccfcb5e1d8" args="(fa_file_t *file, void *buffer, size_t length)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t fa_read_file </td>
+          <td class="memname">size_t fa_read </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td>
           <td class="paramname"> <em>file</em>, </td>
@@ -210,57 +264,13 @@ When opening a file for reading, passing @ followed by a 40-character hexadecima
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">file</td><td>File to read data from </td></tr>
-    <tr><td class="paramname">buffer</td><td>Buffer that receives read data</td></tr>
+    <tr><td class="paramname">buffer</td><td>Buffer that receives read data </td></tr>
+    <tr><td class="paramname">length</td><td>Number of bytes to attempt to read</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>Number of bytes read from file</dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Number of bytes actually read from file</dd></dl>
 <dl class="note"><dt><b>Note:</b></dt><dd>This method will transparently decompress data </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga2f4a9b3da3bbec03feff355b53b46d20"></a><!-- doxytag: member="api.h::fa_seek" ref="ga2f4a9b3da3bbec03feff355b53b46d20" args="(fa_file_t *file, int64_t offset, fa_seek_t whence)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int fa_seek </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td>
-          <td class="paramname"> <em>file</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int64_t&#160;</td>
-          <td class="paramname"> <em>offset</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="api_8h.html#a6cc422a9f7c4e0bc9ee2cafc46280795">fa_seek_t</a>&#160;</td>
-          <td class="paramname"> <em>whence</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Seek to a new location in file. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">file</td><td>File to seek in </td></tr>
-    <tr><td class="paramname">offset</td><td>Offset to use when seeking </td></tr>
-    <tr><td class="paramname">whence</td><td>What mode to use when seeking</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>0 if seeking was successful, &lt;0 otherwise</dd></dl>
-<dl class="note"><dt><b>Note:</b></dt><dd>Seeking when writing is not supported </dd></dl>
 
 </div>
 </div>
@@ -290,12 +300,12 @@ When opening a file for reading, passing @ followed by a 40-character hexadecima
 
 </div>
 </div>
-<a class="anchor" id="gadf6baf207e14046a03b3518ae67891da"></a><!-- doxytag: member="api.h::fa_write_file" ref="gadf6baf207e14046a03b3518ae67891da" args="(fa_file_t *file, const void *buffer, size_t length)" -->
+<a class="anchor" id="gacb0ca92f1a4051dba9d74d4bc76fec2c"></a><!-- doxytag: member="api.h::fa_write" ref="gacb0ca92f1a4051dba9d74d4bc76fec2c" args="(fa_file_t *file, const void *buffer, size_t length)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t fa_write_file </td>
+          <td class="memname">size_t fa_write </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="api_8h.html#a6f0fb00b41145f3a0b6a8512c96f12fb">fa_file_t</a> *&#160;</td>
           <td class="paramname"> <em>file</em>, </td>

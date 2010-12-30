@@ -12,6 +12,7 @@
   <div class="tabs">
     <ul class="tablist">
       <li><a href="main.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -43,15 +44,16 @@ Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__container__t.html">fa_container_t</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__entry__t.html">fa_entry_t</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__block__t.html">fa_block_t</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Compression block header.  <a href="structfa__block__t.html#_details">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__hash__t.html">fa_hash_t</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__header__t.html">fa_header_t</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Table-of-Contents header structure.  <a href="structfa__header__t.html#_details">More...</a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__footer__t.html">fa_footer_t</a></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">File archive footer.  <a href="structfa__footer__t.html#_details">More...</a><br/></td></tr>
 <tr><td colspan="2"><h2><a name="define-members"></a>
 Defines</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab904666c6fc3b9e63066b881c2b4ed69"></a><!-- doxytag: member="filearchive.h::FA_COMPRESSION_SIZE_IGNORE" ref="ab904666c6fc3b9e63066b881c2b4ed69" args="" -->
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>FA_COMPRESSION_SIZE_IGNORE</b>&#160;&#160;&#160;(0x8000)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2355e6ba96c2056f3184fe14c7084d5f"></a><!-- doxytag: member="filearchive.h::FA_INVALID_OFFSET" ref="a2355e6ba96c2056f3184fe14c7084d5f" args="" -->
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>FA_INVALID_OFFSET</b>&#160;&#160;&#160;(0xffffffff)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filearchive_8h.html#ab904666c6fc3b9e63066b881c2b4ed69">FA_COMPRESSION_SIZE_IGNORE</a>&#160;&#160;&#160;(0x8000)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filearchive_8h.html#a2355e6ba96c2056f3184fe14c7084d5f">FA_INVALID_OFFSET</a>&#160;&#160;&#160;(0xffffffff)</td></tr>
 <tr><td colspan="2"><h2><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29b3e0527d242cf4de2b12467c966500"></a><!-- doxytag: member="filearchive.h::fa_container_t" ref="a29b3e0527d242cf4de2b12467c966500" args="" -->
@@ -71,9 +73,9 @@ typedef uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>fa_offset
 <tr><td colspan="2"><h2><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1">fa_compression_t</a> { <a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1af2d619f78c7b211b6a711fd81c5cd9c7">FA_COMPRESSION_NONE</a> =  (0), 
-<b>FA_COMPRESSION_FASTLZ</b> =  (('F' &lt;&lt; 24) | ('L' &lt;&lt; 16) | ('Z' &lt;&lt; 8) | ('0'))
+<a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1a39338a51c359f8fb6afa4840c4d58e66">FA_COMPRESSION_FASTLZ</a> =  (('F' &lt;&lt; 24) | ('L' &lt;&lt; 16) | ('Z' &lt;&lt; 8) | ('0'))
  }</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>fa_version_t</b> { <b>FA_VERSION_1</b> =  1, 
+<tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filearchive_8h.html#a2fa858912fd605b4bb45e137fa74585f">fa_version_t</a> { <b>FA_VERSION_1</b> =  1, 
 <b>FA_VERSION_CURRENT</b> =  FA_VERSION_1
  }</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="filearchive_8h.html#a34d445cda2871f84cf9e85d17ce5fbfc">fa_magic_cookie_t</a> { <a class="el" href="filearchive_8h.html#a34d445cda2871f84cf9e85d17ce5fbfca65b273b63aa14c53f6e8c14360b82b26">FA_MAGIC_COOKIE_HEADER</a> =  (('F' &lt;&lt; 24)|('A' &lt;&lt; 16)|('R' &lt;&lt; 8)|('H')), 
@@ -83,6 +85,35 @@ Enumerations</h2></td></tr>
 <hr/><a name="_details"></a><h2>Detailed Description</h2>
 <p>File archive format definition</p>
 <p>This contains all data structures and enumerations needed to access file archives. </p>
+<hr/><h2>Define Documentation</h2>
+<a class="anchor" id="ab904666c6fc3b9e63066b881c2b4ed69"></a><!-- doxytag: member="filearchive.h::FA_COMPRESSION_SIZE_IGNORE" ref="ab904666c6fc3b9e63066b881c2b4ed69" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FA_COMPRESSION_SIZE_IGNORE&#160;&#160;&#160;(0x8000)</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Compression disable bit for compressed data blocks </p>
+
+</div>
+</div>
+<a class="anchor" id="a2355e6ba96c2056f3184fe14c7084d5f"></a><!-- doxytag: member="filearchive.h::FA_INVALID_OFFSET" ref="a2355e6ba96c2056f3184fe14c7084d5f" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FA_INVALID_OFFSET&#160;&#160;&#160;(0xffffffff)</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Any offset matching this define is not referencing any data and should be considered a NULL pointer </p>
+
+</div>
+</div>
 <hr/><h2>Enumeration Type Documentation</h2>
 <a class="anchor" id="a81eebeaa85a6b3d3df7cc5fb3b7ca1f1"></a><!-- doxytag: member="filearchive.h::fa_compression_t" ref="a81eebeaa85a6b3d3df7cc5fb3b7ca1f1" args="" -->
 <div class="memitem">
@@ -98,6 +129,9 @@ Enumerations</h2></td></tr>
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em><a class="anchor" id="a81eebeaa85a6b3d3df7cc5fb3b7ca1f1af2d619f78c7b211b6a711fd81c5cd9c7"></a><!-- doxytag: member="FA_COMPRESSION_NONE" ref="a81eebeaa85a6b3d3df7cc5fb3b7ca1f1af2d619f78c7b211b6a711fd81c5cd9c7" args="" -->FA_COMPRESSION_NONE</em>&nbsp;</td><td>
 <p>No compression </p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" id="a81eebeaa85a6b3d3df7cc5fb3b7ca1f1a39338a51c359f8fb6afa4840c4d58e66"></a><!-- doxytag: member="FA_COMPRESSION_FASTLZ" ref="a81eebeaa85a6b3d3df7cc5fb3b7ca1f1a39338a51c359f8fb6afa4840c4d58e66" args="" -->FA_COMPRESSION_FASTLZ</em>&nbsp;</td><td>
+<p>FastLZ compression </p>
 </td></tr>
 </table>
 </dd>
@@ -118,14 +152,28 @@ Enumerations</h2></td></tr>
 <p>Cookie pattern </p>
 <dl><dt><b>Enumerator: </b></dt><dd><table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em><a class="anchor" id="a34d445cda2871f84cf9e85d17ce5fbfca65b273b63aa14c53f6e8c14360b82b26"></a><!-- doxytag: member="FA_MAGIC_COOKIE_HEADER" ref="a34d445cda2871f84cf9e85d17ce5fbfca65b273b63aa14c53f6e8c14360b82b26" args="" -->FA_MAGIC_COOKIE_HEADER</em>&nbsp;</td><td>
-<p>Magic cookie used in the fa_header_t.cookie member </p>
+<p>Magic cookie used in the <a class="el" href="structfa__header__t.html#a6431f2d1160342e0d7d003f8376e3703">fa_header_t.cookie</a> member </p>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" id="a34d445cda2871f84cf9e85d17ce5fbfca7640281cdbb25aee7ba2b999806d2e84"></a><!-- doxytag: member="FA_MAGIC_COOKIE_FOOTER" ref="a34d445cda2871f84cf9e85d17ce5fbfca7640281cdbb25aee7ba2b999806d2e84" args="" -->FA_MAGIC_COOKIE_FOOTER</em>&nbsp;</td><td>
-<p>Magic cookie used in the fa_footer_t.cookie member </p>
+<p>Magic cookie used in the <a class="el" href="structfa__footer__t.html#ab67692375d4b7171b55cf08f0f306022">fa_footer_t.cookie</a> member </p>
 </td></tr>
 </table>
 </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="a2fa858912fd605b4bb45e137fa74585f"></a><!-- doxytag: member="filearchive.h::fa_version_t" ref="a2fa858912fd605b4bb45e137fa74585f" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="filearchive_8h.html#a2fa858912fd605b4bb45e137fa74585f">fa_version_t</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Version enumeration </p>
 
 </div>
 </div>

@@ -12,6 +12,7 @@
   <div class="tabs">
     <ul class="tablist">
       <li><a href="main.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -32,30 +33,160 @@
 <h1>fa_header_t Struct Reference</h1>  </div>
 </div>
 <div class="contents">
-<!-- doxytag: class="fa_header_t" --><table class="memberdecls">
+<!-- doxytag: class="fa_header_t" -->
+<p>Table-of-Contents header structure.  
+<a href="#_details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="filearchive_8h_source.html">filearchive.h</a>&gt;</code></p>
+<table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6431f2d1160342e0d7d003f8376e3703"></a><!-- doxytag: member="fa_header_t::cookie" ref="a6431f2d1160342e0d7d003f8376e3703" args="" -->
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>cookie</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a90e01c44dbd7a6a410c4c3edacf5bc2f"></a><!-- doxytag: member="fa_header_t::version" ref="a90e01c44dbd7a6a410c4c3edacf5bc2f" args="" -->
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>version</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26a71fbc4b74f8f0db7dc160a85d36c8"></a><!-- doxytag: member="fa_header_t::size" ref="a26a71fbc4b74f8f0db7dc160a85d36c8" args="" -->
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe24f7d5648c8de03d1866793e8052fd"></a><!-- doxytag: member="fa_header_t::flags" ref="afe24f7d5648c8de03d1866793e8052fd" args="" -->
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>flags</b></td></tr>
-<tr><td class="memItemLeft" ><a class="anchor" id="a5360378024f974d6d0a3ffc42cce4038"></a><!-- doxytag: member="fa_header_t::containers" ref="a5360378024f974d6d0a3ffc42cce4038" args="" -->
-struct {</td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;fa_offset_t&#160;&#160;&#160;<b>offset</b></td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<b>count</b></td></tr>
-<tr><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>containers</b></td></tr>
-<tr><td class="memItemLeft" ><a class="anchor" id="ae8e33127329bf4100ba3af38b528ae36"></a><!-- doxytag: member="fa_header_t::entries" ref="ae8e33127329bf4100ba3af38b528ae36" args="" -->
-struct {</td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;fa_offset_t&#160;&#160;&#160;<b>offset</b></td></tr>
-<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<b>count</b></td></tr>
-<tr><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>entries</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a11ccc2262e0ea748e253b1088fe50d97"></a><!-- doxytag: member="fa_header_t::hashes" ref="a11ccc2262e0ea748e253b1088fe50d97" args="" -->
-fa_offset_t&#160;</td><td class="memItemRight" valign="bottom"><b>hashes</b></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__header__t.html#a6431f2d1160342e0d7d003f8376e3703">cookie</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__header__t.html#a90e01c44dbd7a6a410c4c3edacf5bc2f">version</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__header__t.html#a26a71fbc4b74f8f0db7dc160a85d36c8">size</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__header__t.html#afe24f7d5648c8de03d1866793e8052fd">flags</a></td></tr>
+<tr><td class="memItemLeft" >struct {</td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;fa_offset_t&#160;&#160;&#160;<a class="el" href="structfa__header__t.html#a47d88d8bd63fcef61db1c24c0774b888">offset</a></td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<a class="el" href="structfa__header__t.html#a1fcedbd1061f3b6ad5ba92c51d8f387d">count</a></td></tr>
+<tr><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__header__t.html#a5360378024f974d6d0a3ffc42cce4038">containers</a></td></tr>
+<tr><td class="memItemLeft" >struct {</td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;fa_offset_t&#160;&#160;&#160;<a class="el" href="structfa__header__t.html#a47d88d8bd63fcef61db1c24c0774b888">offset</a></td></tr>
+<tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<a class="el" href="structfa__header__t.html#a1fcedbd1061f3b6ad5ba92c51d8f387d">count</a></td></tr>
+<tr><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__header__t.html#ae8e33127329bf4100ba3af38b528ae36">entries</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">fa_offset_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__header__t.html#a11ccc2262e0ea748e253b1088fe50d97">hashes</a></td></tr>
 </table>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<p>Table-of-Contents header structure. </p>
+<p>This structure is the first data in the TOC </p>
+<hr/><h2>Field Documentation</h2>
+<a class="anchor" id="a5360378024f974d6d0a3ffc42cce4038"></a><!-- doxytag: member="fa_header_t::containers" ref="a5360378024f974d6d0a3ffc42cce4038" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct { ... }   <a class="el" href="structfa__header__t.html#a5360378024f974d6d0a3ffc42cce4038">fa_header_t::containers</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Container information for archive </p>
+
+</div>
+</div>
+<a class="anchor" id="a6431f2d1160342e0d7d003f8376e3703"></a><!-- doxytag: member="fa_header_t::cookie" ref="a6431f2d1160342e0d7d003f8376e3703" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__header__t.html#a6431f2d1160342e0d7d003f8376e3703">fa_header_t::cookie</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Magic cookie (FA_MAGIC_COOKIE_HEADER) </p>
+
+</div>
+</div>
+<a class="anchor" id="a1fcedbd1061f3b6ad5ba92c51d8f387d"></a><!-- doxytag: member="fa_header_t::count" ref="a1fcedbd1061f3b6ad5ba92c51d8f387d" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__header__t.html#a1fcedbd1061f3b6ad5ba92c51d8f387d">fa_header_t::count</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Number of containers in archive</p>
+<p>Number of entries in archive </p>
+
+</div>
+</div>
+<a class="anchor" id="ae8e33127329bf4100ba3af38b528ae36"></a><!-- doxytag: member="fa_header_t::entries" ref="ae8e33127329bf4100ba3af38b528ae36" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct { ... }   <a class="el" href="structfa__header__t.html#ae8e33127329bf4100ba3af38b528ae36">fa_header_t::entries</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Entry information for archive </p>
+
+</div>
+</div>
+<a class="anchor" id="afe24f7d5648c8de03d1866793e8052fd"></a><!-- doxytag: member="fa_header_t::flags" ref="afe24f7d5648c8de03d1866793e8052fd" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__header__t.html#afe24f7d5648c8de03d1866793e8052fd">fa_header_t::flags</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Flags </p>
+
+</div>
+</div>
+<a class="anchor" id="a11ccc2262e0ea748e253b1088fe50d97"></a><!-- doxytag: member="fa_header_t::hashes" ref="a11ccc2262e0ea748e253b1088fe50d97" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">fa_offset_t <a class="el" href="structfa__header__t.html#a11ccc2262e0ea748e253b1088fe50d97">fa_header_t::hashes</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Offset to content hashes (relative to start of TOC) </p>
+
+</div>
+</div>
+<a class="anchor" id="a47d88d8bd63fcef61db1c24c0774b888"></a><!-- doxytag: member="fa_header_t::offset" ref="a47d88d8bd63fcef61db1c24c0774b888" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">fa_offset_t <a class="el" href="structfa__header__t.html#a47d88d8bd63fcef61db1c24c0774b888">fa_header_t::offset</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Offset to containers (relative to start of TOC)</p>
+<p>Offset to entries (relative to start of TOC) </p>
+
+</div>
+</div>
+<a class="anchor" id="a26a71fbc4b74f8f0db7dc160a85d36c8"></a><!-- doxytag: member="fa_header_t::size" ref="a26a71fbc4b74f8f0db7dc160a85d36c8" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__header__t.html#a26a71fbc4b74f8f0db7dc160a85d36c8">fa_header_t::size</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Size of TOC </p>
+
+</div>
+</div>
+<a class="anchor" id="a90e01c44dbd7a6a410c4c3edacf5bc2f"></a><!-- doxytag: member="fa_header_t::version" ref="a90e01c44dbd7a6a410c4c3edacf5bc2f" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="structfa__header__t.html#a90e01c44dbd7a6a410c4c3edacf5bc2f">fa_header_t::version</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Version of archive </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="filearchive_8h_source.html">filearchive.h</a></li>
 </ul>
