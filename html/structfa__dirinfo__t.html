@@ -12,35 +12,32 @@
   <div class="tabs">
     <ul class="tablist">
       <li><a href="main.html"><span>Main&#160;Page</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
     </ul>
   </div>
   <div class="tabs2">
     <ul class="tablist">
-      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
-      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
     </ul>
   </div>
 </div>
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Public Attributes</a>  </div>
+<a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
 <h1>fa_dirinfo_t Struct Reference</h1>  </div>
 </div>
 <div class="contents">
-<!-- doxytag: class="fa_dirinfo_t" -->
-<p><a href="structfa__dirinfo__t-members.html">List of all members.</a></p>
-<table class="memberdecls">
+<!-- doxytag: class="fa_dirinfo_t" --><table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
+Data Fields</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__dirinfo__t.html#a6a3f40b86aea8685cd6c8a27fbdda3f4">name</a></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada44a6fad2c42f26f02ecfea28464ff7"></a><!-- doxytag: member="fa_dirinfo_t::type" ref="ada44a6fad2c42f26f02ecfea28464ff7" args="" -->
-fa_entrytype_t&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a839af72fb0dbaf65348e191e179d98ba"></a><!-- doxytag: member="fa_dirinfo_t::compression" ref="a839af72fb0dbaf65348e191e179d98ba" args="" -->
-fa_compression_t&#160;</td><td class="memItemRight" valign="bottom"><b>compression</b></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_8h.html#ace85fad3398ac8cc3b26a6215c4807fa">fa_entrytype_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__dirinfo__t.html#ada44a6fad2c42f26f02ecfea28464ff7">type</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1">fa_compression_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfa__dirinfo__t.html#a839af72fb0dbaf65348e191e179d98ba">compression</a></td></tr>
 <tr><td class="memItemLeft" ><a class="anchor" id="a4d6c1413d3aec0d4361a97ad03ffe723"></a><!-- doxytag: member="fa_dirinfo_t::size" ref="a4d6c1413d3aec0d4361a97ad03ffe723" args="" -->
 struct {</td></tr>
 <tr><td class="memItemLeft" >&#160;&#160;&#160;uint32_t&#160;&#160;&#160;<b>original</b></td></tr>
@@ -49,7 +46,21 @@ struct {</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae06c81c4bb584084f5421895c285afd4"></a><!-- doxytag: member="fa_dirinfo_t::hash" ref="ae06c81c4bb584084f5421895c285afd4" args="" -->
 <a class="el" href="structfa__hash__t.html">fa_hash_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>hash</b></td></tr>
 </table>
-<hr/><h2>Member Data Documentation</h2>
+<hr/><h2>Field Documentation</h2>
+<a class="anchor" id="a839af72fb0dbaf65348e191e179d98ba"></a><!-- doxytag: member="fa_dirinfo_t::compression" ref="a839af72fb0dbaf65348e191e179d98ba" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="filearchive_8h.html#a81eebeaa85a6b3d3df7cc5fb3b7ca1f1">fa_compression_t</a> <a class="el" href="structfa__dirinfo__t.html#a839af72fb0dbaf65348e191e179d98ba">fa_dirinfo_t::compression</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>What kind of compression that has been used; only valid for files </p>
+
+</div>
+</div>
 <a class="anchor" id="a6a3f40b86aea8685cd6c8a27fbdda3f4"></a><!-- doxytag: member="fa_dirinfo_t::name" ref="a6a3f40b86aea8685cd6c8a27fbdda3f4" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -64,8 +75,22 @@ struct {</td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ada44a6fad2c42f26f02ecfea28464ff7"></a><!-- doxytag: member="fa_dirinfo_t::type" ref="ada44a6fad2c42f26f02ecfea28464ff7" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="api_8h.html#ace85fad3398ac8cc3b26a6215c4807fa">fa_entrytype_t</a> <a class="el" href="structfa__dirinfo__t.html#ada44a6fad2c42f26f02ecfea28464ff7">fa_dirinfo_t::type</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Type of the enumerated entry </p>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/filearchive/<a class="el" href="api_8h_source.html">api.h</a></li>
+<li><a class="el" href="api_8h_source.html">api.h</a></li>
 </ul>
 </div>
 <hr class="footer"/><address class="footer"><small>Generated by&#160;
