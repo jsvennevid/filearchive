@@ -91,7 +91,11 @@ struct fa_archiveinfo_t
 	fa_footer_t footer;
 };
 
-/*! \defgroup Archive
+/*! \defgroup libfilearchive
+ * \{ */
+
+/*! \defgroup Archives
+ *  \brief Functions for creating and reading archives 
  * \{ */
 
 /*!
@@ -120,7 +124,9 @@ int fa_close_archive(fa_archive_t* archive, fa_compression_t compression, fa_arc
 
 /*! \} */
 
-/*! \defgroup File
+/*!
+ * \defgroup Files
+ * \brief Functions for reading and writing archive entries
  * \{ */
 
 /*!
@@ -224,7 +230,9 @@ size_t fa_tell(fa_file_t* file);
 
 /* \} */
 
-/*! \defgroup Directory
+/*!
+ * \defgroup Directories
+ * \brief Functions for enumerating directory entries 
  * \{ */
 
 /*!
@@ -263,6 +271,10 @@ int fa_read_dir(fa_dir_t* dir, fa_dirinfo_t* dirinfo);
  *
  */
 int fa_close_dir(fa_dir_t* dir);
+
+/*!
+ * \}
+ */
 
 /*!
  * \}

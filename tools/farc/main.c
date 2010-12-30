@@ -1,3 +1,5 @@
+#include "farc.h"
+
 #include <stdio.h>
 #include <string.h>
 
