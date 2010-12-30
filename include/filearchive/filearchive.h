@@ -22,8 +22,8 @@ SOFTWARE.
 
 */
 
-#ifndef STREAMER_CONTRIB_FILEARCHIVE_H
-#define STREAMER_CONTRIB_FILEARCHIVE_H
+#ifndef FILEARCHIVE_FILEARCHIVE_H 
+#define FILEARCHIVE_FILEARCHIVE_H
 
 #if defined(_IOP)
 typedef unsigned char uint8_t;
