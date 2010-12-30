@@ -30,7 +30,7 @@ SOFTWARE.
 
 static int fillCache(fa_file_t* file, size_t minFill);
 
-fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compression_t compression, fa_dirinfo_t* dirinfo)
+fa_file_t* fa_open(fa_archive_t* archive, const char* filename, fa_compression_t compression, fa_dirinfo_t* dirinfo)
 {
 	if (archive == NULL)
 	{
@@ -240,7 +240,7 @@ fa_file_t* fa_open_hash(fa_archive_t* archive, const fa_hash_t* hash)
 	return file;
 } 
 
-int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
+int fa_close(fa_file_t* file, fa_dirinfo_t* dirinfo)
 {
 	if (file == NULL)
 	{
@@ -350,7 +350,7 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 	return -1;
 }
 
-size_t fa_read_file(fa_file_t* file, void* buffer, size_t length)
+size_t fa_read(fa_file_t* file, void* buffer, size_t length)
 {
 	size_t totalRead = 0;
 
@@ -538,7 +538,7 @@ static int fillCache(fa_file_t* file, size_t minFill)
 	return 0;
 }
 
-size_t fa_write_file(fa_file_t* file, const void* buffer, size_t length)
+size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 {
 	size_t written = 0;
 
@@ -627,7 +627,7 @@ size_t fa_write_file(fa_file_t* file, const void* buffer, size_t length)
 	return written;
 }
 
-int fa_seek(fa_file_t* file, int64_t offset, fa_seek_t whence)
+int fa_lseek(fa_file_t* file, int64_t offset, fa_seek_t whence)
 {
 	if ((file == NULL) || (file->archive->mode != FA_MODE_READ))
 	{

@@ -143,7 +143,7 @@ static int addFile(fa_archive_t* archive, const char* path, const char* internal
 		size_t insize = 0;
 		size_t outsize = 0;
 
-		file = fa_open_file(archive, internalPath, compression, NULL);
+		file = fa_open(archive, internalPath, compression, NULL);
 		if (file == NULL)
 		{
 			fprintf(stderr, "create: Failed opening archive file \"%s\" for writing\n", internalPath);
@@ -161,7 +161,7 @@ static int addFile(fa_archive_t* archive, const char* path, const char* internal
 		{
 			insize += bufsize;
 
-			if (fa_write_file(file, buf, bufsize) != bufsize)
+			if (fa_write(file, buf, bufsize) != bufsize)
 			{
 				fprintf(stderr, "create: Failed writing %lu bytes to archive file \"%s\"\n", bufsize, internalPath);
 				break;
@@ -188,7 +188,7 @@ static int addFile(fa_archive_t* archive, const char* path, const char* internal
 	{
 		fa_dirinfo_t info;
 
-		if ((fa_close_file(file, &info) == 0) && (result == 0) && (verbose > 0))
+		if ((fa_close(file, &info) == 0) && (result == 0) && (verbose > 0))
 		{
 			char hash[sizeof(fa_hash_t) * 2 + 1];
 			int i;

@@ -78,17 +78,17 @@ struct fa_dirinfo_t
 
 	struct
 	{
-		uint32_t original;
-		uint32_t compressed;
-	} size;
+		uint32_t original; /*!< Uncompressed size */
+		uint32_t compressed; /*!< Compressed size */
+	} size; /*!< Size of entry */
 
-	fa_hash_t hash;
+	fa_hash_t hash; /*!< Content hash for entry */
 };
 
 struct fa_archiveinfo_t
 {
-	fa_header_t header;
-	fa_footer_t footer;
+	fa_header_t header; /*!< Header as written to archive */
+	fa_footer_t footer; /*!< Footer as written to archive */
 };
 
 /*! \defgroup libfilearchive
@@ -138,7 +138,7 @@ int fa_close_archive(fa_archive_t* archive, fa_compression_t compression, fa_arc
  * \param archive Archive to access
  * \param filename File to access
  * \param compression What compression to use (when reading, pass FA_COMPRESSION_NONE)
- * \param dirinfo If specified when opening for reading, this instance will receive information about the file
+ * \param info If specified when opening for reading, this instance will receive information about the file
  *
  * \return File ready to access, or NULL on error
  *
@@ -146,7 +146,7 @@ int fa_close_archive(fa_archive_t* archive, fa_compression_t compression, fa_arc
  * \note When opening a file for reading, passing @ followed by a 40-character hexadecimal string will allow opening a file for access through its content hash
  *
  */
-fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compression_t compression, fa_dirinfo_t* info);
+fa_file_t* fa_open(fa_archive_t* archive, const char* filename, fa_compression_t compression, fa_dirinfo_t* info);
 
 /*!
  *
@@ -173,7 +173,7 @@ fa_file_t* fa_open_hash(fa_archive_t* archive, const fa_hash_t* hash);
  * \return 0 if operation was successful, <0 otherwise
  *
  */
-int fa_close_file(fa_file_t* file, fa_dirinfo_t* info);
+int fa_close(fa_file_t* file, fa_dirinfo_t* info);
 
 /*!
  *
@@ -181,13 +181,14 @@ int fa_close_file(fa_file_t* file, fa_dirinfo_t* info);
  *
  * \param file File to read data from
  * \param buffer Buffer that receives read data
+ * \param length Number of bytes to attempt to read
  *
- * \return Number of bytes read from file
+ * \return Number of bytes actually read from file
  *
  * \note This method will transparently decompress data
  *
  */
-size_t fa_read_file(fa_file_t* file, void* buffer, size_t length);
+size_t fa_read(fa_file_t* file, void* buffer, size_t length);
 
 /*!
  *
@@ -200,7 +201,7 @@ size_t fa_read_file(fa_file_t* file, void* buffer, size_t length);
  * \return Number of bytes written; in case of an error this will NOT match the incoming length parameter
  *
  */
-size_t fa_write_file(fa_file_t* file, const void* buffer, size_t length);
+size_t fa_write(fa_file_t* file, const void* buffer, size_t length);
 
 /*!
  *
@@ -215,7 +216,7 @@ size_t fa_write_file(fa_file_t* file, const void* buffer, size_t length);
  * \note Seeking when writing is not supported
  *
  */
-int fa_seek(fa_file_t* file, int64_t offset, fa_seek_t whence);
+int fa_lseek(fa_file_t* file, int64_t offset, fa_seek_t whence);
 
 /*!
  *
@@ -247,7 +248,7 @@ size_t fa_tell(fa_file_t* file);
  * \note Enumerating when writing is not supported
  *
  */
-fa_dir_t* fa_open_dir(fa_archive_t* archive, const char* dir);
+fa_dir_t* fa_opendir(fa_archive_t* archive, const char* dir);
 
 /*!
  *
@@ -259,7 +260,7 @@ fa_dir_t* fa_open_dir(fa_archive_t* archive, const char* dir);
  * \return 0 if a new entry was enumerated, <0 otherwise
  *
  */
-int fa_read_dir(fa_dir_t* dir, fa_dirinfo_t* dirinfo);
+int fa_readdir(fa_dir_t* dir, fa_dirinfo_t* dirinfo);
 
 /*!
  *
@@ -270,7 +271,7 @@ int fa_read_dir(fa_dir_t* dir, fa_dirinfo_t* dirinfo);
  * \return 0 if operation was successful, <0 otherwise
  *
  */
-int fa_close_dir(fa_dir_t* dir);
+int fa_closedir(fa_dir_t* dir);
 
 /*!
  * \}

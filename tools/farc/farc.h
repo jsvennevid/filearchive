@@ -27,7 +27,7 @@
  * \verbatim create <options> <archive> <file> ... [@<spec> ...] \endverbatim
  * 
  * Creates a new archive. Options are as follows:
- * \li <tt>-z <em><method></em></tt>		Compression method used for the archive; available methods are \b none and \b fastlz
+ * \li <tt>-z <em>\<method\></em></tt>		Compression method used for the archive; available methods are \b none and \b fastlz
  * \li <tt>-s</tt>			Pad files and structures to align with 2048 sector size (appropriate for DVD media)
  * \li <tt>-v</tt>			Enable verbose command output, displaying information about every file added to the archive
  *

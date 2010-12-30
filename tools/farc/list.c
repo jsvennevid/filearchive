@@ -14,14 +14,14 @@ static int listDirectory(fa_archive_t* archive, const char* path)
 		fa_dirinfo_t info;
 		int files = 0;
 
-		dir = fa_open_dir(archive, path);
+		dir = fa_opendir(archive, path);
 		if (dir == NULL)
 		{
 			fprintf(stderr, "list: Failed to open archive directory \"%s\"\n", path);
 			break;
 		}
 
-		while (fa_read_dir(dir, &info) == 0)
+		while (fa_readdir(dir, &info) == 0)
 		{
 			if (info.type == FA_ENTRY_DIR)
 			{
@@ -56,7 +56,7 @@ static int listDirectory(fa_archive_t* archive, const char* path)
 	}
 	while (0);
 
-	fa_close_dir(dir);
+	fa_closedir(dir);
 
 	return result;
 }

@@ -27,7 +27,7 @@ SOFTWARE.
 #include <stdlib.h>
 #include <string.h>
 
-fa_dir_t* fa_open_dir(fa_archive_t* archive, const char* path)
+fa_dir_t* fa_opendir(fa_archive_t* archive, const char* path)
 {
 	fa_dir_t* dir = NULL;
 
@@ -59,7 +59,7 @@ fa_dir_t* fa_open_dir(fa_archive_t* archive, const char* path)
 	return dir;
 }
 
-int fa_read_dir(fa_dir_t* dir, fa_dirinfo_t* info)
+int fa_readdir(fa_dir_t* dir, fa_dirinfo_t* info)
 {
 	if ((dir == NULL) || (info == NULL))
 	{
@@ -107,7 +107,7 @@ int fa_read_dir(fa_dir_t* dir, fa_dirinfo_t* info)
 	return -1;	
 } 
 
-int fa_close_dir(fa_dir_t* dir)
+int fa_closedir(fa_dir_t* dir)
 {
 	if (dir == NULL)
 	{

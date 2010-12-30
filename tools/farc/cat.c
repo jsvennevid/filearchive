@@ -27,13 +27,13 @@ int commandCat(int argc, char* argv[])
 			char buf[1024];
 			size_t len;
 
-			if ((file = fa_open_file(archive, argv[i], FA_COMPRESSION_NONE, NULL)) == NULL)
+			if ((file = fa_open(archive, argv[i], FA_COMPRESSION_NONE, NULL)) == NULL)
 			{
 				fprintf(stderr, "cat: Could not open archive file \"%s\"\n", argv[i]);
 				break;
 			}
 
-			while ((len = fa_read_file(file, buf, sizeof(buf))) > 0)
+			while ((len = fa_read(file, buf, sizeof(buf))) > 0)
 			{
 				if (fwrite(buf, 1, len, stdout) != len)
 				{
@@ -47,7 +47,7 @@ int commandCat(int argc, char* argv[])
 				break;
 			}
 
-			if (fa_close_file(file, NULL) < 0)
+			if (fa_close(file, NULL) < 0)
 			{
 				fprintf(stderr, "cat: An error occured while closing archive file \"%s\"\n", argv[i]);
 				break;
@@ -57,7 +57,7 @@ int commandCat(int argc, char* argv[])
 
 		if (file != NULL)
 		{
-			fa_close_file(file, NULL);
+			fa_close(file, NULL);
 		}
 
 		if (i == argc)

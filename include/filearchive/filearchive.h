@@ -59,6 +59,7 @@ typedef enum
 	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0')) /*!< FastLZ compression */
 } fa_compression_t;
 
+/*! Version enumeration */
 typedef enum
 {
 	FA_VERSION_1 = 1,
@@ -84,9 +85,9 @@ struct fa_container_t
 
 	struct
 	{
-		fa_offset_t offset;	/*! Offset to first entry in container (Relative to start of TOC) */
-		uint32_t count;		/*!  Number of entries in container */
-	} entries;
+		fa_offset_t offset;	/*! Offset to first entry (Relative to start of TOC) */
+		uint32_t count;		/*! Number of entries */
+	} entries; /*!< Data entries in container */
 };
 
 /*! Data block entry descriptor */
@@ -100,9 +101,9 @@ struct fa_entry_t
 
 	struct
 	{
-		uint32_t original;	/*!< Uncompressed data size */
-		uint32_t compressed;	/*!< Compressed data size */	
-	} size;
+		uint32_t original;	/*!< Uncompressed size */
+		uint32_t compressed;	/*!< Compressed size */	
+	} size; /*!< Entry size */
 };
 
 /*!
@@ -142,13 +143,13 @@ struct fa_header_t
 	{
 		fa_offset_t offset;	/*!< Offset to containers (relative to start of TOC) */
 		uint32_t count;		/*!< Number of containers in archive */
-	} containers;
+	} containers; /*!< Container information for archive */
 
 	struct
 	{
 		fa_offset_t offset;	/*!< Offset to entries (relative to start of TOC) */
 		uint32_t count;		/*!< Number of entries in archive */
-	} entries;
+	} entries; /*!< Entry information for archive */
 
 	fa_offset_t hashes;		/*!< Offset to content hashes (relative to start of TOC) */
 };
@@ -168,18 +169,18 @@ struct fa_footer_t
 		uint32_t original;	/*!< TOC size, uncompressed */
 		uint32_t compressed;	/*!< TOC size, compressed */
 		fa_hash_t hash;		/*!< TOC hash */
-	} toc;
+	} toc; /*!< TOC block information */
 
 	struct
 	{
 		uint32_t original;	/*!< Data size, uncompressed */
 		uint32_t compressed;	/*!< Data size, compressed */
-	} data;
+	} data; /*!< Data block information */
 };
 
-#define FA_COMPRESSION_SIZE_IGNORE (0x8000)
+#define FA_COMPRESSION_SIZE_IGNORE (0x8000) /*!< Compression disable bit for compressed data blocks */ 
 
-#define FA_INVALID_OFFSET (0xffffffff)
+#define FA_INVALID_OFFSET (0xffffffff) /*!< Any offset matching this define is not referencing any data and should be considered a NULL pointer */
 
 #endif
 
