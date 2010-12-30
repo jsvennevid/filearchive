@@ -257,7 +257,6 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 
 		if (memcmp(&hash, &footer.toc.hash, sizeof(fa_hash_t)))
 		{
-			fprintf(stderr, "TOC hash mismatch\n");
 			break;
 		}
 
@@ -380,7 +379,6 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 
 				*(offset + 1) = '\0';
 
-				parentContainer = (fa_container_t*)(((uint8_t*)containers.data) + parent);
 				actual = findContainer(path, containers.data, strings.data);
 
 				if (actual == FA_INVALID_OFFSET)
@@ -396,6 +394,7 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 						containers.data = realloc(containers.data, containers.capacity * sizeof(fa_container_t));
 					}
 
+					parentContainer = (fa_container_t*)(((uint8_t*)containers.data) + parent);
 					container = &(containers.data[containers.count++]);
 
 					container->parent = parent;

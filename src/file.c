@@ -57,7 +57,6 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 
 					if (strlen(in) != sizeof(hash) * 2)
 					{
-						fprintf(stderr, "size mismatch\n");
 						break;
 					}
 
