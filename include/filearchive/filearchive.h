@@ -25,6 +25,13 @@ SOFTWARE.
 #ifndef FILEARCHIVE_FILEARCHIVE_H 
 #define FILEARCHIVE_FILEARCHIVE_H
 
+/*! \file filearchive.h
+ * File archive format definition
+ *
+ * This contains all data structures and enumerations needed to access file archives.
+ *
+ */
+
 #if defined(_IOP)
 typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
@@ -43,10 +50,11 @@ typedef struct fa_hash_t fa_hash_t;
 
 typedef uint32_t fa_offset_t;
 
+/*! Compression type */
 typedef enum
 {
-	FA_COMPRESSION_NONE = (0),
-	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0'))
+	FA_COMPRESSION_NONE = (0), /*!< No compression */
+	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0')) /*! FastLZ compression */
 } fa_compression_t;
 
 typedef enum
@@ -56,24 +64,26 @@ typedef enum
 	FA_VERSION_CURRENT = FA_VERSION_1
 } fa_version_t;
 
+/*! Cookie pattern */
 typedef enum
 {
-	FA_MAGIC_COOKIE_HEADER = (('F' << 24)|('A' << 16)|('R' << 8)|('H')),
-	FA_MAGIC_COOKIE_FOOTER = (('F' << 24)|('A' << 16)|('R' << 8)|('F'))
+	FA_MAGIC_COOKIE_HEADER = (('F' << 24)|('A' << 16)|('R' << 8)|('H')), /*!< Magic cookie used in the fa_header_t.cookie member */
+	FA_MAGIC_COOKIE_FOOTER = (('F' << 24)|('A' << 16)|('R' << 8)|('F')) /*!< Magic cookie used in the fa_footer_t.cookie member */ 
 } fa_magic_cookie_t;
 
+/*! Archive entry container */
 struct fa_container_t
 {
-	fa_offset_t parent;		// Offset to parent container (Relative to start of TOC)
-	fa_offset_t children;		// Offset to child containers (Relative to start of TOC)
-	fa_offset_t next;		// Offset to next sibling container (Relative to start of TOC)
+	fa_offset_t parent;		/*!< Offset to parent container (Relative to start of TOC) */
+	fa_offset_t children;		/*!< Offset to child containers (Relative to start of TOC) */
+	fa_offset_t next;		/*!< Offset to next sibling container (Relative to start of TOC) */
 
-	fa_offset_t name;		// Offset to container name (Relative to start of TOC)
+	fa_offset_t name;		/*!< Offset to container name (Relative to start of TOC) */
 
 	struct
 	{
-		fa_offset_t offset;	// Offset to first entry in container (Relative to start of TOC)
-		uint32_t count;		// Number of entries in container
+		fa_offset_t offset;	/*! Offset to first entry in container (Relative to start of TOC) */
+		uint32_t count;		/*!  Number of entries in container */
 	} entries;
 };
 
