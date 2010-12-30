@@ -52,9 +52,8 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 				do
 				{
 					const char* in = filename + 1;
-					const fa_hash_t* hashes;	
 					fa_hash_t hash;
-					int i, n;
+					int i;
 
 					if (strlen(in) != sizeof(hash) * 2)
 					{
@@ -92,16 +91,10 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 						break;
 					}
 
-					hashes = (fa_hash_t*)(((uint8_t*)archive->toc) + archive->toc->hashes);
-					for (i = 0, n = archive->toc->entries.count; i < n; ++i)
+					file = fa_open_hash(archive, &hash);
+					if (file != NULL)
 					{
-						if (memcmp(&hashes[i], &hash, sizeof(fa_hash_t)))
-						{
-							continue;
-						}
-
-						begin = ((fa_entry_t*)(((uint8_t*)archive->toc) + archive->toc->entries.offset)) + i;
-						break;
+						return file;
 					}
 				}
 				while (0);
@@ -210,6 +203,46 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 
 	return NULL;
 }
+
+fa_file_t* fa_open_hash(fa_archive_t* archive, const fa_hash_t* hash)
+{
+	fa_hash_t* begin;
+	fa_hash_t* curr;
+	fa_file_t* file;
+	int i, n;
+
+	if ((archive == NULL) || (archive->mode != FA_MODE_READ))
+	{
+		return NULL;
+	}
+
+	curr = begin = (fa_hash_t*)(((uint8_t*)archive->toc) + archive->toc->hashes);
+	for (i = 0, n = archive->toc->entries.count; i < n; ++i, ++curr)
+	{
+		if (!memcmp(hash, curr, sizeof(fa_hash_t)))
+		{
+			break;
+		}
+	}
+
+	if (i == n)
+	{
+		return NULL;
+	}
+
+
+	file = malloc(sizeof(fa_file_t) + sizeof(FA_COMPRESSION_MAX_BLOCK));
+	memset(file, 0, sizeof(fa_file_t));
+
+	file->archive = archive;
+	file->entry = ((fa_entry_t*)(((uint8_t*)archive->toc) + archive->toc->entries.offset)) + i;
+
+	file->base = archive->base + file->entry->data;
+
+	file->buffer.data = (uint8_t*)(file + 1);
+
+	return file;
+} 
 
 int fa_close_file(fa_file_t* file, fa_dirinfo_t* dirinfo)
 {

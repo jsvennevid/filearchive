@@ -126,6 +126,19 @@ fa_file_t* fa_open_file(fa_archive_t* archive, const char* filename, fa_compress
 
 /*!
  *
+ * Open an entry in the archive based on its content hash - this is an optimized path if you already have the content hash in a binary format
+ *
+ * \param archive Archive to access
+ * \param hash Hash to use as key
+ *
+ * \return File ready to read from
+ *
+ * \note This only supports read-access for obvious reasons
+**/
+fa_file_t* fa_open_hash(fa_archive_t* archive, const fa_hash_t* hash);
+
+/*!
+ *
  * Close a file and finalize changes
  *
  * \param file File to close
