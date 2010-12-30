@@ -39,7 +39,7 @@ static int listDirectory(fa_archive_t* archive, const char* path)
 
 				if (files == 0)
 				{
-					fprintf(stderr, "Dir: \"%s\"\n", path);
+					fprintf(stdout, "Dir: \"%s\"\n", path);
 					files = 1;
 				}
 
@@ -48,7 +48,7 @@ static int listDirectory(fa_archive_t* archive, const char* path)
 					sprintf(hash + i * 2, "%02x", info.hash.data[i]);
 				}
 
-				fprintf(stderr, "File: \"%s\", %u bytes (%u bytes compressed, ratio %.2f%%), hash: %s\n", info.name, info.size.original, info.size.compressed, info.size.original > 0 ? (info.size.compressed * 100.0f) / info.size.original : 0, hash);
+				fprintf(stdout, "File: \"%s\", %u bytes (%u bytes compressed, ratio %.2f%%), hash: %s\n", info.name, info.size.original, info.size.compressed, info.size.original > 0 ? (info.size.compressed * 100.0f) / info.size.original : 0, hash);
 			}
 		} 
 
@@ -79,7 +79,7 @@ static int listArchive(const char* path)
 			break;
 		}
 
-		fprintf(stderr, "Archive: \"%s\"\n", path);
+		fprintf(stdout, "Archive: \"%s\"\n", path);
 
 		result = listDirectory(archive, "");
 
@@ -88,8 +88,8 @@ static int listArchive(const char* path)
 			sprintf(hash + i * 2, "%02x", info.footer.toc.hash.data[i]);
 		}
 
-		fprintf(stderr, "Data: %u bytes (%u bytes compressed, ratio %.2f%%)\n", info.footer.data.original, info.footer.data.compressed, info.footer.data.original > 0 ? (info.footer.data.compressed * 100.0f) / info.footer.data.original : 0);
-		fprintf(stderr, "TOC: %u bytes (%u bytes compressed, ratio %.2f%%), hash: %s\n", info.footer.toc.original, info.footer.toc.compressed, info.footer.toc.original > 0 ? (info.footer.toc.compressed * 100.0f) / info.footer.toc.original : 0, hash); 
+		fprintf(stdout, "Data: %u bytes (%u bytes compressed, ratio %.2f%%)\n", info.footer.data.original, info.footer.data.compressed, info.footer.data.original > 0 ? (info.footer.data.compressed * 100.0f) / info.footer.data.original : 0);
+		fprintf(stdout, "TOC: %u bytes (%u bytes compressed, ratio %.2f%%), hash: %s\n", info.footer.toc.original, info.footer.toc.compressed, info.footer.toc.original > 0 ? (info.footer.toc.compressed * 100.0f) / info.footer.toc.original : 0, hash); 
 	}
 	while (0);
 

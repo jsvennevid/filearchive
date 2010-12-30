@@ -207,7 +207,6 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 					if (block.compressed & FA_COMPRESSION_SIZE_IGNORE)
 					{
 						memcpy(((uint8_t*)archive->toc) + written, archive->cache.data + cacheOffset + sizeof(block), block.original);
-						cacheOffset += sizeof(block) + block.original; 
 					}
 					else
 					{
