@@ -1,4 +1,6 @@
-/*
+/*!
+
+\page License
 
 Copyright (c) 2010 Jesper Svennevid
 
@@ -54,7 +56,7 @@ typedef uint32_t fa_offset_t;
 typedef enum
 {
 	FA_COMPRESSION_NONE = (0), /*!< No compression */
-	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0')) /*! FastLZ compression */
+	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0')) /*!< FastLZ compression */
 } fa_compression_t;
 
 typedef enum
@@ -87,72 +89,91 @@ struct fa_container_t
 	} entries;
 };
 
+/*! Data block entry descriptor */
 struct fa_entry_t
 {
-	fa_offset_t data;		// Offset to file data (Relative to start of data)
-	fa_offset_t name;		// Offset to name (Relative to start of TOC)
+	fa_offset_t data;		/*!< Offset to file data (Relative to start of data stream) */
+	fa_offset_t name;		/*!< Offset to name (Relative to start of TOC) */
 
-	uint32_t compression;		// Compression method used in file
-	uint32_t blockSize;		// Block size required when decompressing
+	uint32_t compression;		/*!< Compression method used in file */
+	uint32_t blockSize;		/*!< Block size required when decompressing */
 
 	struct
 	{
-		uint32_t original;	// original file size when uncompressed
-		uint32_t compressed;	// compressed file size in archive
+		uint32_t original;	/*!< Uncompressed data size */
+		uint32_t compressed;	/*!< Compressed data size */	
 	} size;
 };
 
+/*!
+ * \brief Compression block header
+ *
+ * This header is present before each and every block in a compressed stream (compression != FA_COMPRESSION_NONE)
+ *
+*/
 struct fa_block_t
 {
-	uint16_t original;
-	uint16_t compressed; 		// If the highest bit (FILEARCHIVE_COMPRESSION_SIZE_IGNORE) is set, the block is uncompressed
+	uint16_t original;		/*!< Size of the original block when decompressed */
+	uint16_t compressed; 		/*!< Size of the compressed block in the stream; if the highest bit is set (FILEARCHIVE_COMPRESSION_SIZE_IGNORE), the block is not compressed */
 };
 
+/*! Content hash */
 struct fa_hash_t
 {
-	uint8_t data[20];
+	uint8_t data[20]; /*!< 160 bit SHA-1 hash */
 };
 
+/*!
+ * \brief Table-of-Contents header structure
+ *
+ * This structure is the first data in the TOC
+ *
+*/
 struct fa_header_t
 {
-	uint32_t cookie;		// Magic cookie
-	uint32_t version;		// Version of archive
-	uint32_t size;			// Size of TOC
-	uint32_t flags;			// Flags
+	uint32_t cookie;		/*!< Magic cookie (FA_MAGIC_COOKIE_HEADER) */
+	uint32_t version;		/*!< Version of archive */
+	uint32_t size;			/*!< Size of TOC */
+	uint32_t flags;			/*!< Flags */
 
 	// Version 1
 
 	struct
 	{
-		fa_offset_t offset;	// Offset to containers (relative to start of TOC)
-		uint32_t count;		// Number of containers in archive
+		fa_offset_t offset;	/*!< Offset to containers (relative to start of TOC) */
+		uint32_t count;		/*!< Number of containers in archive */
 	} containers;
 
 	struct
 	{
-		fa_offset_t offset;	// Offset to entries (relative to start of TOC)
-		uint32_t count;		// Number of entries in archive
+		fa_offset_t offset;	/*!< Offset to entries (relative to start of TOC) */
+		uint32_t count;		/*!< Number of entries in archive */
 	} entries;
 
-	fa_offset_t hashes;		// Offset to content hashes
+	fa_offset_t hashes;		/*!< Offset to content hashes (relative to start of TOC) */
 };
 
+/*!
+ * \brief File archive footer
+ *
+ * Present and the end of a file archive, contains information on how to locate TOC and data
+ */
 struct fa_footer_t
 {
-	uint32_t cookie;		// Magic cookie
+	uint32_t cookie;		/*!< Magic cookie (FA_MAGIC_COOKIE_FOOTER) */
 
 	struct
 	{
-		uint32_t compression;	// TOC compression format
-		uint32_t original;	// TOC size, uncompressed
-		uint32_t compressed;	// TOC size, compressed
-		fa_hash_t hash;		// TOC hash
+		uint32_t compression;	/*!< TOC compression format */
+		uint32_t original;	/*!< TOC size, uncompressed */
+		uint32_t compressed;	/*!< TOC size, compressed */
+		fa_hash_t hash;		/*!< TOC hash */
 	} toc;
 
 	struct
 	{
-		uint32_t original;	// Data size, uncompressed
-		uint32_t compressed;	// Data size, compressed
+		uint32_t original;	/*!< Data size, uncompressed */
+		uint32_t compressed;	/*!< Data size, compressed */
 	} data;
 };
 
