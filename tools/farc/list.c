@@ -69,7 +69,7 @@ static int listArchive(const char* path)
 	do
 	{
 		fa_archiveinfo_t info;
-		char hash[sizeof(fa_hash_t) + 1];
+		char hash[sizeof(fa_hash_t) * 2 + 1];
 		int i;
 
 		archive = fa_open_archive(path, FA_MODE_READ, 0, &info);
