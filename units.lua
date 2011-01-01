@@ -16,8 +16,23 @@ StaticLibrary
 
 	Propagate = {
 		Env = {
-			CPPPATH = { "include" }
+			CPPPATH = { "include" },
+		},
+
+		Libs = {
+			{ "z"; Config = "macosx-*-*-*" },
+			{ "z"; Config = "linux-*-*-*" },
+		},
+
+		Defines = {
+			{ "FA_ZLIB_ENABLE"; Config = "macosx-*-*-*" },
+			{ "FA_ZLIB_ENABLE"; Config = "linux-*-*-*" },
 		}
+	},
+
+	Defines = {
+		{ "ENABLE_ZLIB"; Config = "macosx-*-*-*" },
+		{ "ENABLE_ZLIB"; Config = "linux-*-*-*" },
 	},
 
 	Env = {

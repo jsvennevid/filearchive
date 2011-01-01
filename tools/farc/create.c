@@ -246,6 +246,16 @@ int commandCreate(int argc, char* argv[])
 					{
 						compression = FA_COMPRESSION_NONE;
 					}
+					else if (!strcmp("lz77", argv[i]))
+					{
+#if defined(FA_ZLIB_ENABLE)
+						compression = FA_COMPRESSION_LZ77;
+#else
+						fprintf(stderr, "create: lz77 support has been excluded\n");
+						return -1;
+						break;
+#endif
+					}
 					else
 					{
 						fprintf(stderr, "create: Unknown compression method \"%s\"\n", argv[i]);

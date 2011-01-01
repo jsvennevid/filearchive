@@ -1,7 +1,5 @@
 /*!
 
-\page License
-
 Copyright (c) 2010 Jesper Svennevid
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -56,7 +54,8 @@ typedef uint32_t fa_offset_t;
 typedef enum
 {
 	FA_COMPRESSION_NONE = (0), /*!< No compression */
-	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0')) /*!< FastLZ compression */
+	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0')), /*!< FastLZ compression */
+	FA_COMPRESSION_LZ77 = (('L' << 24) | ('Z' << 16) | ('7' << 8) | ('7')), /*!< LZ77 compression (zlib) */
 } fa_compression_t;
 
 /*! Version enumeration */
