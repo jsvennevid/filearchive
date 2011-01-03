@@ -246,12 +246,12 @@ int commandCreate(int argc, char* argv[])
 					{
 						compression = FA_COMPRESSION_NONE;
 					}
-					else if (!strcmp("lz77", argv[i]))
+					else if (!strcmp("deflate", argv[i]))
 					{
 #if defined(FA_ZLIB_ENABLE)
-						compression = FA_COMPRESSION_LZ77;
+						compression = FA_COMPRESSION_DEFLATE;
 #else
-						fprintf(stderr, "create: lz77 support has been excluded\n");
+						fprintf(stderr, "create: deflate support has been excluded\n");
 						return -1;
 						break;
 #endif

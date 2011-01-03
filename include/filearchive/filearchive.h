@@ -55,7 +55,7 @@ typedef enum
 {
 	FA_COMPRESSION_NONE = (0), /*!< No compression */
 	FA_COMPRESSION_FASTLZ = (('F' << 24) | ('L' << 16) | ('Z' << 8) | ('0')), /*!< FastLZ compression */
-	FA_COMPRESSION_LZ77 = (('L' << 24) | ('Z' << 16) | ('7' << 8) | ('7')), /*!< LZ77 compression (zlib) */
+	FA_COMPRESSION_DEFLATE = (('Z' << 24) | ('L' << 16) | ('D' << 8) | ('F')), /*!< Deflate compression (zlib) */
 } fa_compression_t;
 
 /*! Version enumeration */

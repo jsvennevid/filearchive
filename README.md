@@ -41,7 +41,7 @@ Features
 
 * File format supports embedding itself at the end of another stream of data, allowing for one-file based distribution alongside the software using the contents.
 
-* Optional compression (currently just supporting fastlz, but this can be extended) on a per-file basis.
+* Optional compression (currently supporting fastlz and deflate; very easily extended) on a per-file basis.
 
 * Easy to use file-based API.
 

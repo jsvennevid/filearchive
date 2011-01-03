@@ -31,8 +31,8 @@ StaticLibrary
 	},
 
 	Defines = {
-		{ "ENABLE_ZLIB"; Config = "macosx-*-*-*" },
-		{ "ENABLE_ZLIB"; Config = "linux-*-*-*" },
+		{ "FA_ZLIB_ENABLE"; Config = "macosx-*-*-*" },
+		{ "FA_ZLIB_ENABLE"; Config = "linux-*-*-*" },
 	},
 
 	Env = {

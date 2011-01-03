@@ -26,7 +26,7 @@ SOFTWARE.
 
 #include <fastlz/fastlz.h>
 
-#if defined(ENABLE_ZLIB)
+#if defined(FA_ZLIB_ENABLE)
 #include <zlib.h>
 #endif
 
@@ -46,8 +46,8 @@ size_t fa_compress_block(fa_compression_t compression, void* out, size_t outSize
 			return fastlz_compress_level(2, in, inSize, out);
 		}
 		break;
-#if defined(ENABLE_ZLIB)
-		case FA_COMPRESSION_LZ77:
+#if defined(FA_ZLIB_ENABLE)
+		case FA_COMPRESSION_DEFLATE:
 		{
 			uLongf destLen = outSize;
 
@@ -79,8 +79,8 @@ size_t fa_decompress_block(fa_compression_t compression, void* out, size_t outSi
 			return fastlz_decompress(in, inSize, out, outSize);
 		}
 		break;
-#if defined(ENABLE_ZLIB)
-		case FA_COMPRESSION_LZ77:
+#if defined(FA_ZLIB_ENABLE)
+		case FA_COMPRESSION_DEFLATE:
 		{
 			uLongf destLen = outSize;
 

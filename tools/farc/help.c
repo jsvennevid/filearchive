@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(FA_ZLIB_ENABLE)
+#define FA_COMPRESSION_METHODS "fastlz deflate"
+#else
+#define FA_COMPRESSION_METHODS "fastlz"
+#endif
+
 void commandHelp(char* command)
 {
 	fprintf(stderr, "\n");
@@ -24,7 +30,7 @@ void commandHelp(char* command)
 		fprintf(stderr, "farc crecte|c [<options>] <archive> [@<spec>] [<path> ...]\n\n");
 		fprintf(stderr, "Create a new file archive.\n\n");
 		fprintf(stderr, "Options are:\n");
-		fprintf(stderr, "\t-z <compression>   Select compression method: fastlz lz77 none (default: none) (global/spec)\n");
+		fprintf(stderr, "\t-z <compression>   Select compression method: " FA_COMPRESSION_METHODS " none (default: none) (global/spec)\n");
 		fprintf(stderr, "\t-s                 Optimize layout for optical media (align access to block boundaries) (global)\n");
 		fprintf(stderr, "\t-v                 Enabled verbose output (global)\n");
 		fprintf(stderr, "\n<archive> = Archive file to create\n");
