@@ -27,6 +27,10 @@ SOFTWARE.
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(_MSC_VER)
+#pragma warning(disable: 4127)
+#endif
+
 fa_dir_t* fa_opendir(fa_archive_t* archive, const char* path)
 {
 	fa_dir_t* dir = NULL;
@@ -68,9 +72,11 @@ int fa_readdir(fa_dir_t* dir, fa_dirinfo_t* info)
 
 	if (dir->container != NULL)
 	{
+		fa_container_t* next;
+
 		memset(info, 0, sizeof(fa_dirinfo_t));
 
-		fa_container_t* next = dir->container->next != FA_INVALID_OFFSET ? (fa_container_t*)(((uint8_t*)dir->archive->toc) + dir->container->next) : NULL;
+		next = dir->container->next != FA_INVALID_OFFSET ? (fa_container_t*)(((uint8_t*)dir->archive->toc) + dir->container->next) : NULL;
 
 		info->name = dir->container->name != FA_INVALID_OFFSET ? (const char*)(((uint8_t*)dir->archive->toc) + dir->container->name) : NULL;
 
@@ -139,11 +145,14 @@ const fa_container_t* fa_find_container(const fa_archive_t* archive, const fa_co
 
 	for (curr = container->children; curr != FA_INVALID_OFFSET;)
 	{
-		child = (fa_container_t*)(toc + curr);
-		const char* name = child->name != FA_INVALID_OFFSET ? (const char*)(toc + child->name) : NULL;
-		size_t nlen = name != NULL ? strlen(name) : 0;
+		const char* name;
+		size_t nlen;
 
-		if (((term - path) == nlen) && !memcmp(name, path, nlen))
+		child = (fa_container_t*)(toc + curr);
+		name = child->name != FA_INVALID_OFFSET ? (const char*)(toc + child->name) : NULL;
+		nlen = name != NULL ? strlen(name) : 0;
+
+		if (((size_t)(term - path) == nlen) && !memcmp(name, path, nlen))
 		{
 			break;
 		}

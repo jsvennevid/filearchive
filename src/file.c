@@ -28,6 +28,10 @@ SOFTWARE.
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(_MSC_VER)
+#pragma warning(disable: 4100 4127)
+#endif
+
 static int fillCache(fa_file_t* file, size_t minFill);
 
 fa_file_t* fa_open(fa_archive_t* archive, const char* filename, fa_compression_t compression, fa_dirinfo_t* dirinfo)
@@ -181,7 +185,7 @@ fa_file_t* fa_open(fa_archive_t* archive, const char* filename, fa_compression_t
 					continue;
 				}
 
-				*out++ = last = c;
+				*out++ = (char)(last = c);
 			}
 			*out = '\0';
 
@@ -287,14 +291,14 @@ int fa_close(fa_file_t* file, fa_dirinfo_t* dirinfo)
 
 				if (compressedSize >= writer->file.buffer.fill)
 				{
-					block.original = writer->file.buffer.fill;
-					block.compressed = FA_COMPRESSION_SIZE_IGNORE | writer->file.buffer.fill;
+					block.original = (uint16_t)writer->file.buffer.fill;
+					block.compressed = (uint16_t)(FA_COMPRESSION_SIZE_IGNORE | writer->file.buffer.fill);
 					data = writer->file.buffer.data;
 				}
 				else
 				{
-					block.original = writer->file.buffer.fill;
-					block.compressed = compressedSize;
+					block.original = (uint16_t)writer->file.buffer.fill;
+					block.compressed = (uint16_t)compressedSize;
 					data = file->archive->cache.data;
 				}
 
@@ -387,7 +391,7 @@ size_t fa_read(fa_file_t* file, void* buffer, size_t length)
 
 		if (file->entry->compression == FA_COMPRESSION_NONE)
 		{
-			if (fseek(file->archive->fd, file->base + file->offset.compressed, SEEK_SET) < 0)
+			if (fseek(file->archive->fd, (long)(file->base + file->offset.compressed), SEEK_SET) < 0)
 			{
 				break;
 			}
@@ -518,7 +522,7 @@ static int fillCache(fa_file_t* file, size_t minFill)
 	archive->cache.offset = 0;
 	archive->cache.fill = cacheFill;
 
-	if (fseek(archive->fd, file->base + file->offset.compressed, SEEK_SET) < 0)
+	if (fseek(archive->fd, (long)(file->base + file->offset.compressed), SEEK_SET) < 0)
 	{
 		return -1;
 	}
@@ -629,29 +633,36 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 
 int fa_lseek(fa_file_t* file, int64_t offset, fa_seek_t whence)
 {
+	uint32_t fixedOffset;
+
 	if ((file == NULL) || (file->archive->mode != FA_MODE_READ))
 	{
 		return -1;
 	}
 
-	uint32_t fixedOffset;
 	switch (whence)
 	{
 		case FA_SEEK_SET:
 		{
-			fixedOffset = offset;
+			fixedOffset = (uint32_t)offset;
 		}
 		break;
 
 		case FA_SEEK_CURR:
 		{
-			fixedOffset = file->offset.original + offset;
+			fixedOffset = (uint32_t)(file->offset.original + offset);
 		}
 		break;
 
 		case FA_SEEK_END:
 		{
-			fixedOffset = file->entry->size.original + offset;
+			fixedOffset = (uint32_t)(file->entry->size.original + offset);
+		}
+		break;
+
+		default:
+		{
+			return -1;
 		}
 		break;
 	}
@@ -669,7 +680,7 @@ int fa_lseek(fa_file_t* file, int64_t offset, fa_seek_t whence)
 
 		if (alignedOffset != fixedOffset)
 		{
-			if (fseek(file->archive->fd, file->base + alignedOffset, SEEK_SET) < 0)
+			if (fseek(file->archive->fd, (long)(file->base + alignedOffset), SEEK_SET) < 0)
 			{
 				return -1;
 			}
