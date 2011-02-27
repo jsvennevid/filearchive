@@ -21,18 +21,18 @@ StaticLibrary
 
 		Libs = {
 			{ "z"; Config = "macosx-*-*-*" },
-			{ "z"; Config = "linux-*-*-*" },
+			{ "z", "lzma"; Config = "linux-*-*-*" },
 		},
 
 		Defines = {
 			{ "FA_ZLIB_ENABLE"; Config = "macosx-*-*-*" },
-			{ "FA_ZLIB_ENABLE"; Config = "linux-*-*-*" },
+			{ "FA_ZLIB_ENABLE", "FA_LZMA_ENABLE"; Config = "linux-*-*-*" },
 		}
 	},
 
 	Defines = {
 		{ "FA_ZLIB_ENABLE"; Config = "macosx-*-*-*" },
-		{ "FA_ZLIB_ENABLE"; Config = "linux-*-*-*" },
+		{ "FA_ZLIB_ENABLE", "FA_LZMA_ENABLE"; Config = "linux-*-*-*" },
 	},
 
 	Env = {

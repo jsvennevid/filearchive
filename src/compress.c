@@ -30,6 +30,10 @@ SOFTWARE.
 #include <zlib.h>
 #endif
 
+#if defined(FA_LZMA_ENABLE)
+#include <lzma.h>
+#endif
+
 size_t fa_compress_block(fa_compression_t compression, void* out, size_t outSize, const void* in, size_t inSize)
 {
 	switch (compression)
@@ -65,6 +69,32 @@ size_t fa_compress_block(fa_compression_t compression, void* out, size_t outSize
 		}
 		break;
 #endif
+
+#if defined(FA_LZMA_ENABLE)
+		case FA_COMPRESSION_LZMA2:
+		{
+			size_t outPos = 0;
+			lzma_filter filters[2];
+			lzma_options_lzma options;
+
+			if (lzma_lzma_preset(&options, 6))
+			{
+				return inSize;
+			}
+
+			filters[0].id = LZMA_FILTER_LZMA2;
+			filters[0].options = &options;
+			filters[1].id = LZMA_VLI_UNKNOWN;
+
+			lzma_ret ret = lzma_raw_buffer_encode(filters, NULL, in, inSize, out, &outPos, outSize);
+			if (ret != LZMA_OK)
+			{
+				return inSize;
+			}
+			return outPos;
+		}
+		break;
+#endif
 	}
 }
 
@@ -90,6 +120,33 @@ size_t fa_decompress_block(fa_compression_t compression, void* out, size_t outSi
 			}
 
 			return destLen;
+		}
+		break;
+#endif
+
+#if defined(FA_LZMA_ENABLE) 
+		case FA_COMPRESSION_LZMA2:
+		{
+			size_t inPos = 0, outPos = 0;
+			lzma_filter filters[2];
+			lzma_options_lzma options;
+
+			if (lzma_lzma_preset(&options, 6))
+			{
+				return 0;
+			}
+
+			filters[0].id = LZMA_FILTER_LZMA2;
+			filters[0].options = &options;
+			filters[1].id = LZMA_VLI_UNKNOWN;
+
+			lzma_ret ret = lzma_raw_buffer_decode(filters, NULL, in, &inPos, inSize, out, &outPos, outSize);
+			if (ret != LZMA_OK)
+			{
+				return 0;
+			}
+
+			return outPos; 
 		}
 		break;
 #endif

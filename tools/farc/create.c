@@ -246,16 +246,18 @@ int commandCreate(int argc, char* argv[])
 					{
 						compression = FA_COMPRESSION_NONE;
 					}
+#if defined(FA_ZLIB_ENABLE)
 					else if (!strcmp("deflate", argv[i]))
 					{
-#if defined(FA_ZLIB_ENABLE)
 						compression = FA_COMPRESSION_DEFLATE;
-#else
-						fprintf(stderr, "create: deflate support has been excluded\n");
-						return -1;
-						break;
-#endif
 					}
+#endif
+#if defined(FA_LZMA_ENABLE)
+					else if (!strcmp("lzma2", argv[i]))
+					{
+						compression = FA_COMPRESSION_LZMA2;
+					}
+#endif
 					else
 					{
 						fprintf(stderr, "create: Unknown compression method \"%s\"\n", argv[i]);
