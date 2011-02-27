@@ -302,13 +302,13 @@ int fa_close(fa_file_t* file, fa_dirinfo_t* dirinfo)
 					data = file->archive->cache.data;
 				}
 
-				if (fwrite(&block, 1, sizeof(block), (FILE*)(file->archive->fd)) != sizeof(block))
+				if (awriter->archive.ops->write(awriter->archive.handle, &block, sizeof(block)) != sizeof(block))
 				{
 					result = -1;
 					break;
 				}
 
-				if (fwrite(data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)file->archive->fd) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
+				if (awriter->archive.ops->write(awriter->archive.handle, data, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
 				{
 					result = -1;
 					break;
@@ -391,12 +391,14 @@ size_t fa_read(fa_file_t* file, void* buffer, size_t length)
 
 		if (file->entry->compression == FA_COMPRESSION_NONE)
 		{
-			if (fseek(file->archive->fd, (long)(file->base + file->offset.compressed), SEEK_SET) < 0)
+			fa_archive_t* archive = file->archive;
+
+			if (archive->ops->lseek(archive->handle, (long)(file->base + file->offset.compressed), FA_SEEK_SET) < 0)
 			{
 				break;
 			}
 
-			if (fread(buffer, 1, maxRead, file->archive->fd) != maxRead)
+			if (archive->ops->read(archive->handle, buffer, maxRead) != maxRead)
 			{
 				break;
 			}
@@ -413,7 +415,7 @@ size_t fa_read(fa_file_t* file, void* buffer, size_t length)
 
 			maxRead = length > maxFileRead ? maxFileRead : length;
 
-			if (fread(file->buffer.data, 1, maxFileRead, file->archive->fd) != maxFileRead)
+			if (archive->ops->read(archive->handle, file->buffer.data, maxFileRead) != maxFileRead)
 			{
 				break;
 			}
@@ -522,12 +524,12 @@ static int fillCache(fa_file_t* file, size_t minFill)
 	archive->cache.offset = 0;
 	archive->cache.fill = cacheFill;
 
-	if (fseek(archive->fd, (long)(file->base + file->offset.compressed), SEEK_SET) < 0)
+	if (archive->ops->lseek(archive->handle, file->base + file->offset.compressed, FA_SEEK_SET) < 0)
 	{
 		return -1;
 	}
 
-	if (fread(archive->cache.data + cacheFill, 1, maxRead, archive->fd) != maxRead)
+	if (archive->ops->read(archive->handle, archive->cache.data + cacheFill, maxRead) != maxRead)
 	{
 		return -1;
 	}
@@ -563,7 +565,7 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 
 		if (writer->entry->compression == FA_COMPRESSION_NONE)
 		{
-			size_t result = fwrite(buffer, 1, length, (FILE*)file->archive->fd);
+			size_t result = file->archive->ops->write(file->archive->handle, buffer, length);
 
 			writer->entry->size.original += result;
 			writer->entry->size.compressed += result;
@@ -603,12 +605,12 @@ size_t fa_write(fa_file_t* file, const void* buffer, size_t length)
 					data = file->archive->cache.data;
 				}
 
-				if (fwrite(&block, 1, sizeof(block), (FILE*)(file->archive->fd)) != sizeof(block))
+				if (awriter->archive.ops->write(awriter->archive.handle, &block, sizeof(block)) != sizeof(block))
 				{
 					break;
 				}
 
-				if (fwrite(data, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)file->archive->fd) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
+				if (awriter->archive.ops->write(awriter->archive.handle, data, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE) != (size_t)((block.compressed & ~FA_COMPRESSION_SIZE_IGNORE)))
 				{
 					break;
 				}
@@ -676,16 +678,18 @@ int fa_lseek(fa_file_t* file, int64_t offset, fa_seek_t whence)
 	{
 		uint32_t alignedOffset = fixedOffset & ~(FA_COMPRESSION_MAX_BLOCK-1);
 		uint32_t maxFileRead = file->entry->size.original - alignedOffset;
+		fa_archive_t* archive = file->archive;
+
 		maxFileRead = maxFileRead > FA_COMPRESSION_MAX_BLOCK ? FA_COMPRESSION_MAX_BLOCK : maxFileRead;
 
 		if (alignedOffset != fixedOffset)
 		{
-			if (fseek(file->archive->fd, (long)(file->base + alignedOffset), SEEK_SET) < 0)
+			if (archive->ops->lseek(archive->handle, file->base + alignedOffset, FA_SEEK_SET) < 0)
 			{
 				return -1;
 			}
 
-			if (fread(file->buffer.data, 1, maxFileRead, file->archive->fd) != maxFileRead)
+			if (archive->ops->read(archive->handle, file->buffer.data, maxFileRead) != maxFileRead)
 			{
 				return -1;
 			}

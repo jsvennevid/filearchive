@@ -32,6 +32,9 @@ typedef struct fa_file_t fa_file_t;
 typedef struct fa_file_writer_t fa_file_writer_t;
 typedef struct fa_dir_t fa_dir_t;
 
+typedef struct fa_io_ops_t fa_io_ops_t;
+typedef void* fa_io_handle_t;
+
 #include "../api.h"
 
 #include <sha1/sha1.h>
@@ -41,13 +44,16 @@ typedef struct fa_dir_t fa_dir_t;
 #define FA_COMPRESSION_MAX_BLOCK (16384)
 #define FA_ARCHIVE_CACHE_SIZE (FA_COMPRESSION_MAX_BLOCK * 4)
 
+#define FA_IO_INVALID_HANDLE (NULL)
+
 struct fa_archive_t
 {
 	fa_header_t* toc;
 	fa_mode_t mode;
 
+	const fa_io_ops_t* ops;
+	fa_io_handle_t handle;
 	uint64_t base;
-	void* fd;
 
 	struct
 	{
@@ -135,6 +141,19 @@ struct fa_dir_t
 size_t fa_compress_block(fa_compression_t compression, void* out, size_t outSize, const void* in, size_t inSize);
 size_t fa_decompress_block(fa_compression_t compression, void* out, size_t outSize, const void* in, size_t inSize); 
 const fa_container_t* fa_find_container(const fa_archive_t* archive, const fa_container_t* container, const char* path);
+
+struct fa_io_ops_t
+{
+	fa_io_handle_t (*open)(const char* filename, fa_mode_t mode);
+	int (*close)(fa_io_handle_t handle);
+
+	size_t (*read)(fa_io_handle_t handle, void* buffer, size_t length);
+	size_t (*write)(fa_io_handle_t handle, const void* buffer, size_t length); 
+	int (*lseek)(fa_io_handle_t handle, int64_t offset, fa_seek_t whence);
+	size_t (*tell)(fa_io_handle_t handle);	
+};
+
+const fa_io_ops_t* fa_get_default_ops(); 
 
 #endif
 

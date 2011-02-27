@@ -77,7 +77,8 @@ int fa_close_archive(fa_archive_t* archive, fa_compression_t compression, fa_arc
 		free(writer->entries.data);
 	}
 
-	fclose((FILE*)archive->fd);
+	archive->ops->close(archive->handle);
+
 	free(archive->toc);
 	free(archive);
 
@@ -88,6 +89,8 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 {
 	fa_archive_t* archive = malloc(sizeof(fa_archive_t) + FA_ARCHIVE_CACHE_SIZE);
 	memset(archive, 0, sizeof(fa_archive_t));
+
+	archive->ops = fa_get_default_ops();
 
 	archive->mode = FA_MODE_READ;
 	archive->cache.data = (uint8_t*)(archive + 1);
@@ -101,30 +104,30 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 		SHA1Context state;
 		fa_hash_t hash;
 
-		archive->fd = fopen(filename, "rb");
-		if (archive->fd == NULL)
+		archive->handle = archive->ops->open(filename, FA_MODE_READ);
+		if (archive->handle == FA_IO_INVALID_HANDLE)
 		{
 			break;
 		}
 
-		if (fseek(archive->fd, 0, SEEK_END) < 0)
+		if (archive->ops->lseek(archive->handle, 0, FA_SEEK_END) < 0)
 		{
 			break;
 		}	
 
-		fileSize = ftell(archive->fd);
+		fileSize = archive->ops->tell(archive->handle);
 		if (fileSize == -1)
 		{
 			break;
 		}
 
 		maxRead = fileSize > FA_ARCHIVE_CACHE_SIZE ? FA_ARCHIVE_CACHE_SIZE : fileSize;
-		if ((maxRead < sizeof(footer)) || (fseek(archive->fd, -maxRead, SEEK_CUR) < 0))
+		if ((maxRead < sizeof(footer)) || (archive->ops->lseek(archive->handle, -maxRead, FA_SEEK_CURR) < 0))
 		{
 			break;
 		}
 
-		if (fread(archive->cache.data, 1, maxRead, archive->fd) != maxRead)
+		if (archive->ops->read(archive->handle, archive->cache.data, maxRead) != maxRead)
 		{
 			break;
 		}
@@ -149,7 +152,7 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 
 		archive->base = fileSize - (maxRead - i) - (footer.toc.compressed + footer.data.compressed);
 
-		if (fseek(archive->fd, fileSize - (maxRead - i) - footer.toc.compressed, SEEK_SET) < 0)
+		if (archive->ops->lseek(archive->handle, fileSize - (maxRead - i) - footer.toc.compressed, FA_SEEK_SET) < 0)
 		{
 			break;
 		}
@@ -158,7 +161,7 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 
 		if (footer.toc.compression == FA_COMPRESSION_NONE)
 		{
-			if (fread(archive->toc, 1, footer.toc.original, archive->fd) != footer.toc.original)
+			if (archive->ops->read(archive->handle, archive->toc, footer.toc.original) != footer.toc.original)
 			{
 				break;
 			}
@@ -174,7 +177,7 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 				uint32_t maxRead = length > (FA_ARCHIVE_CACHE_SIZE - cacheSize) ? (FA_ARCHIVE_CACHE_SIZE - cacheSize) : length;
 				uint32_t cacheOffset = 0;
 
-				if (fread(archive->cache.data + cacheSize, 1, maxRead, archive->fd) != maxRead)
+				if (archive->ops->read(archive->handle, archive->cache.data + cacheSize, maxRead) != maxRead)
 				{
 					break;
 				}
@@ -269,9 +272,9 @@ static fa_archive_t* openArchiveReading(const char* filename, fa_archiveinfo_t* 
 	}
 	while (0);
 
-	if (archive->fd)
+	if (archive->handle != FA_IO_INVALID_HANDLE)
 	{
-		fclose(archive->fd);
+		archive->ops->close(archive->handle);
 	}
 
 	free(archive->toc);
@@ -285,13 +288,15 @@ static fa_archive_t* openArchiveWriting(const char* filename, uint32_t alignment
 	fa_archive_writer_t* writer = malloc(sizeof(fa_archive_writer_t) + FA_ARCHIVE_CACHE_SIZE);
 	memset(writer, 0, sizeof(fa_archive_writer_t));
 
+	writer->archive.ops = fa_get_default_ops();
+
 	writer->archive.mode = FA_MODE_WRITE;
 	writer->archive.cache.data = (uint8_t*)(writer + 1);
 
 	do
 	{
-		writer->archive.fd = fopen(filename, "wb");
-		if (writer->archive.fd == NULL)
+		writer->archive.handle = writer->archive.ops->open(filename, FA_MODE_WRITE);
+		if (writer->archive.handle == FA_IO_INVALID_HANDLE)
 		{
 			break;
 		}
@@ -615,7 +620,7 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 
 			if (compression == FA_COMPRESSION_NONE)
 			{
-				if (fwrite(blockData, 1, blockSize, (FILE*)writer->archive.fd) != blockSize)
+				if (writer->archive.ops->write(writer->archive.handle, blockData, blockSize) != blockSize)
 				{
 					result = -1;
 					break;
@@ -639,13 +644,13 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 				block.compressed = compressedSize;
 			}
 
-			if (fwrite(&block, 1, sizeof(block), writer->archive.fd) != sizeof(block))
+			if (writer->archive.ops->write(writer->archive.handle, &block, sizeof(block)) != sizeof(block))
 			{
 				result = -1;
 				break;
 			}
 
-			if (fwrite(compressedBlock, 1, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE, (FILE*)writer->archive.fd) != (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE))
+			if (writer->archive.ops->write(writer->archive.handle, compressedBlock, block.compressed & ~FA_COMPRESSION_SIZE_IGNORE) != (block.compressed & ~FA_COMPRESSION_SIZE_IGNORE))
 			{
 				result = -1;
 				break;
@@ -677,7 +682,7 @@ static int writeToc(fa_archive_writer_t* writer, fa_compression_t compression, f
 		local.footer.data.original = writer->offset.original;
 		local.footer.data.compressed = writer->offset.compressed;
 
-		if (fwrite(&local.footer, 1, sizeof(local.footer), (FILE*)writer->archive.fd) != sizeof(local.footer))
+		if (writer->archive.ops->write(writer->archive.handle, &local.footer, sizeof(local.footer)) != sizeof(local.footer))
 		{
 			result = -1;
 			break;
