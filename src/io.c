@@ -53,38 +53,52 @@ const fa_io_ops_t* fa_get_default_ops()
 #include <fcntl.h>
 #include <unistd.h>
 
+typedef union
+{
+	fa_io_handle_t handle;
+	int fd;
+} fa_io_internal_handle_t;
+
 fa_io_handle_t fa_io_open(const char* filename, fa_mode_t mode)
 {
 	int oflags[2] = { O_RDONLY, O_WRONLY|O_CREAT|O_TRUNC }; 	
-	return (fa_io_handle_t)open(filename, oflags[mode], S_IRWXU|S_IRGRP|S_IROTH); 
+	fa_io_internal_handle_t internal = { 0 };
+
+	internal.fd = open(filename, oflags[mode], S_IRWXU|S_IRGRP|S_IROTH); 
+	return internal.handle;
 }
 
 int fa_io_close(fa_io_handle_t handle)
 {
-	return close((int)handle);	
+	fa_io_internal_handle_t internal = { .handle = handle };
+	return close(internal.fd);
 }
 
 size_t fa_io_read(fa_io_handle_t handle, void* buffer, size_t length)
 {
-	ssize_t result = read((int)handle, buffer, length);
+	fa_io_internal_handle_t internal = { .handle = handle };
+	ssize_t result = read(internal.fd, buffer, length);
 	return result < 0 ? 0 : result;
 }
 
 size_t fa_io_write(fa_io_handle_t handle, const void* buffer, size_t length)
 {
-	ssize_t result = write((int)handle, buffer, length);
+	fa_io_internal_handle_t internal = { .handle = handle };
+	ssize_t result = write(internal.fd, buffer, length);
 	return result < 0 ? 0 : result;
 }
 
 int fa_io_lseek(fa_io_handle_t handle, int64_t offset, fa_seek_t whence)
 {
+	fa_io_internal_handle_t internal = { .handle = handle };
 	int whdata[3] = { SEEK_SET, SEEK_CUR, SEEK_END };
-	return lseek((int)handle, offset, whdata[whence]) < 0 ? -1 : 0;
+	return lseek(internal.fd, offset, whdata[whence]) < 0 ? -1 : 0;
 }
 
 size_t fa_io_tell(fa_io_handle_t handle)
 {
-	off_t result = lseek((int)handle, 0, SEEK_CUR);
+	fa_io_internal_handle_t internal = { .handle = handle };
+	off_t result = lseek(internal.fd, 0, SEEK_CUR);
 	return result < 0 ? 0 : result; 
 }
 #elif defined(_WIN32)
