@@ -124,7 +124,7 @@ fa_file_t* fa_open(fa_archive_t* archive, const char* filename, fa_compression_t
 				return NULL;
 			}
 
-			file = malloc(sizeof(fa_file_t) + sizeof(FA_COMPRESSION_MAX_BLOCK));
+			file = malloc(sizeof(fa_file_t) + FA_COMPRESSION_MAX_BLOCK);
 			memset(file, 0, sizeof(fa_file_t));
 
 			file->archive = archive;
@@ -231,7 +231,7 @@ fa_file_t* fa_open_hash(fa_archive_t* archive, const fa_hash_t* hash)
 	}
 
 
-	file = malloc(sizeof(fa_file_t) + sizeof(FA_COMPRESSION_MAX_BLOCK));
+	file = malloc(sizeof(fa_file_t) + FA_COMPRESSION_MAX_BLOCK);
 	memset(file, 0, sizeof(fa_file_t));
 
 	file->archive = archive;
