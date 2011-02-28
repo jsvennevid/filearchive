@@ -44,7 +44,11 @@ typedef void* fa_io_handle_t;
 #define FA_COMPRESSION_MAX_BLOCK (16384)
 #define FA_ARCHIVE_CACHE_SIZE (FA_COMPRESSION_MAX_BLOCK * 4)
 
+#if defined(_WIN32)
+#define FA_IO_INVALID_HANDLE ((fa_io_handle_t)-1)
+#else
 #define FA_IO_INVALID_HANDLE (NULL)
+#endif
 
 struct fa_archive_t
 {

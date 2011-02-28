@@ -94,7 +94,82 @@ size_t fa_io_tell(fa_io_handle_t handle)
 	return result < 0 ? 0 : result; 
 }
 #elif defined(_WIN32)
-#error WIN32
+#include <windows.h>
+
+fa_io_handle_t fa_io_open(const char* filename, fa_mode_t mode)
+{
+	DWORD access[2] = { GENERIC_READ, GENERIC_WRITE };
+	DWORD share[2] = { FILE_SHARE_READ, 0 };
+	DWORD disposition[2] = { OPEN_EXISTING, CREATE_ALWAYS };
+	HANDLE handle;
+
+	handle = CreateFile(filename, access[mode], share[mode], NULL, disposition[mode], FILE_ATTRIBUTE_NORMAL, NULL);
+	return (fa_io_handle_t)handle;
+}
+
+int fa_io_close(fa_io_handle_t handle)
+{
+	return CloseHandle((HANDLE)handle) != 0 ? 0 : -1;
+}
+
+size_t fa_io_read(fa_io_handle_t handle, void* buffer, size_t length)
+{
+	DWORD readData = 0;
+	if (!ReadFile((HANDLE)handle, buffer, length, &readData, NULL))
+	{
+		return 0;
+	}
+	return (size_t)readData;
+}
+
+size_t fa_io_write(fa_io_handle_t handle, const void* buffer, size_t length)
+{
+	DWORD writeData;
+	if (!WriteFile((HANDLE)handle, buffer, length, &writeData, NULL))
+	{
+		return 0;
+	}
+	return (size_t)writeData;
+}
+
+int fa_io_lseek(fa_io_handle_t handle, int64_t offset, fa_seek_t whence)
+{
+	LARGE_INTEGER largeOffset;
+	DWORD method;
+
+	switch (whence)
+	{
+		default: case FA_SEEK_SET: method = FILE_BEGIN; break;
+		case FA_SEEK_CURR: method = FILE_CURRENT; break;
+		case FA_SEEK_END: method = FILE_END; break;
+	}
+
+	largeOffset.QuadPart = offset;
+	largeOffset.LowPart = SetFilePointer((HANDLE)handle, largeOffset.LowPart, NULL, method);
+
+	/* TODO: issue when using the full 64 bit seek, investigate */
+
+	if ((INVALID_SET_FILE_POINTER == largeOffset.LowPart) && (GetLastError() != NO_ERROR))
+	{
+		return -1;
+	}
+
+	return 0;
+}
+
+size_t fa_io_tell(fa_io_handle_t handle)
+{
+	LARGE_INTEGER offset;
+	offset.QuadPart = 0;
+	offset.LowPart = SetFilePointer((HANDLE)handle, offset.LowPart, &offset.HighPart, FILE_CURRENT);
+
+	if ((INVALID_SET_FILE_POINTER == offset.LowPart) && (GetLastError() != NO_ERROR))
+	{
+		return 0;
+	}
+
+	return (size_t)offset.QuadPart;
+}
 #else
-#error OTHER
+#error I/O layer not implemented for this platform
 #endif
