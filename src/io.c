@@ -53,6 +53,10 @@ const fa_io_ops_t* fa_get_default_ops()
 #include <fcntl.h>
 #include <unistd.h>
 
+#if defined(__OpenBSD__)
+#include <sys/stat.h>
+#endif
+
 fa_io_handle_t fa_io_open(const char* filename, fa_mode_t mode)
 {
 	int oflags[2] = { O_RDONLY, O_WRONLY|O_CREAT|O_TRUNC }; 	

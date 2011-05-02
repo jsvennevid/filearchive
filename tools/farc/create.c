@@ -21,6 +21,10 @@
 #include <sys/syslimits.h>
 #endif
 
+#if defined(__OpenBSD__)
+#include <sys/syslimits.h>
+#endif
+
 typedef enum
 {
 	State_Options,
